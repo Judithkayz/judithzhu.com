@@ -49,7 +49,17 @@
       "Bash(awk 'NR==1787' /Users/juzhu/Desktop/claude/chateau_site_final.html)",
       "Bash(awk 'NR==1789' /Users/juzhu/Desktop/claude/chateau_site_final.html)",
       "Bash(python3 -m http.server 8765)",
-      "Bash(python3)"
+      "Bash(python3)",
+      "Bash(awk 'NR>=1787 && NR<=1821' /Users/juzhu/github/chateau_site/.claude/worktrees/hungry-mendel-31ba70/index.html)",
+      "Read(//private/tmp/**)",
+      "Bash(python3 -c ' *)",
+      "Bash(python3 /dev/stdin)",
+      "Bash(python3 /tmp/read_guests.py)",
+      "Bash(awk 'NR>=1788 && NR<=1818 {printf \"LINE %d: %.300s\\\\n\", NR, $0}' /Users/juzhu/github/chateau_site/.claude/worktrees/hungry-mendel-31ba70/index.html)",
+      "Bash(python3 /tmp/update_guests.py)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(git -C /Users/juzhu/github/chateau_site/.claude/worktrees/hungry-mendel-31ba70 status)",
+      "Bash(git -C /Users/juzhu/github/chateau_site/.claude/worktrees/hungry-mendel-31ba70 status --short)"
     ]
   }
 }
