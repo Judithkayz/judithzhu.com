@@ -32,7 +32,7 @@
     { initials:"GK", name:"Gabby Kinder", photo:"assets/photos/gabby-kinder.jpg", role:"", bio:"", status:"Single", nationalities:[], acquaintance:0, passports:0, room:"TBD", bunking:"", age:"" },
   ];
 
-    const GUESTS = [
+  const GUESTS = [
     {name:"Calypso",initials:"C",url:"https://www.instagram.com/calythecollie/",age:"Baby",role:"Stay at home dog",bio:"Herding children and dogs, Attention, Confrontation · Being chased by children and dogs, attention, confrontation",room:"1K1",bunking:"Judith Zhu",status:"Dawg",passports:0,acquaintance:3.5,nationalities:[]},
     {name:"Oliver Laso",initials:"OL",url:"https://www.linkedin.com/in/oliver-barry",age:"Old Coot",role:"Staff Software Engineer @ Palantir",bio:"Calypso · Whatever Calypso dislikes",room:"1K1",bunking:"Calypso",status:"Dawg",passports:3,acquaintance:10,nationalities:["UK","Spain","Germany"]},
     {name:"Yadi Yang",initials:"YY",url:"https://www.linkedin.com/in/yadi-yang-9873b8142",age:"Skibidi iPad kid",role:"Product Manager @ Boeing",bio:"Selling defence secrets to china · Normal diet methods",room:"1K2",bunking:"Leila Fujiwara",status:"Single",passports:1,acquaintance:12,nationalities:["China"]},
