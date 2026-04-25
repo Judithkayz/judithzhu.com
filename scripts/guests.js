@@ -123,14 +123,14 @@
       var passTag = g.passports > 1 ? '<span style="' + tagStyle + '">' + g.passports + ' Passports</span>' : "";
 
       var photoInner = g.photo
-        ? '<img src="' + g.photo + '" style="width:100%;height:100%;object-fit:cover;object-position:' + (g.photoPosition || 'center top') + ';display:block;border-radius:50%;' + (g.photoZoom ? 'transform:scale(' + g.photoZoom + ');' : '') + '">'
+        ? '<img src="' + g.photo + '" style="width:100%;height:100%;object-fit:cover;object-position:' + (g.photoPosition || 'center top') + ';display:block;">'
         : '<div style="display:flex;flex-direction:column;align-items:center;gap:5px;"><div style="font-family:\'Playfair Display\',serif;font-size:22px;font-weight:300;color:#8a6030;opacity:0.42;letter-spacing:.05em;">' + g.initials + '</div><div style="font-size:7px;letter-spacing:.26em;color:rgba(42,31,24,0.25);text-transform:uppercase;">Photo</div></div>';
       return '<div style="background:rgba(255,252,248,0.55);display:flex;flex-direction:column;">'
-        + '<div style="width:100%;aspect-ratio:1;background:#e8ddd0;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:110px;padding:8%;' + (g.photoZoom ? 'border-radius:50%;' : '') + '">'
+        + '<div style="width:100%;aspect-ratio:1;background:#e8ddd0;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:110px;border-radius:50%;">'
         + photoInner
         + '</div>'
         + '<div style="padding:13px 15px 15px;flex:1;display:flex;flex-direction:column;">'
-        + '<div style="font-family:\'Playfair Display\',serif;font-size:15px;font-weight:400;color:#2a1f18;letter-spacing:-.01em;line-height:1.2;margin-bottom:2px;">' + g.name + '</div>'
+        + '<div style="font-family:\'Playfair Display\',serif;font-size:15px;font-weight:400;color:#2a1f18;letter-spacing:-.01em;line-height:1.2;margin-bottom:2px;">' + (g.url ? '<a href="' + g.url + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(138,96,48,0.35);">' + g.name + '</a>' : g.name) + '</div>'
         + '<span style="font-size:7.5px;letter-spacing:.18em;color:#8a6030;text-transform:uppercase;margin-bottom:7px;display:block;">' + g.role + '</span>'
         + (function() {
             var label = 'font-style:normal;font-size:7px;letter-spacing:.2em;text-transform:uppercase;color:rgba(42,31,24,0.35);display:block;margin-bottom:2px;';
