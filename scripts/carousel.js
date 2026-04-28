@@ -44,25 +44,50 @@
   document.addEventListener('keydown', e => { if(e.key==='Escape' && isOpen) closeMenu(); });
 
   /* ── Sub-page routing ── */
-  window.openSub = function(e, id){
-    e.preventDefault();
-    closeMenu();
-    if(id==='home'){ goHome(e); return; }
-    setTimeout(()=>{
+  function activateSub(id){
+    if(!id || id === 'home'){
+      document.body.classList.remove('sub-active');
+      document.querySelectorAll('.sub').forEach(s=>s.classList.remove('active'));
+      window.scrollTo(0,0);
+      onScroll();
+    } else {
       document.body.classList.add('sub-active');
       document.querySelectorAll('.sub').forEach(s=>s.classList.remove('active'));
       const target = document.getElementById('sub-'+id);
       if(target){ target.classList.add('active'); window.scrollTo(0,0); }
-    }, isOpen ? 350 : 0);
+    }
+  }
+
+  window.openSub = function(e, id){
+    e.preventDefault();
+    const wasOpen = isOpen;
+    closeMenu();
+    setTimeout(()=>{
+      activateSub(id);
+      if(!id || id === 'home'){
+        history.pushState(null, '', window.location.pathname);
+      } else {
+        history.pushState(null, '', '#' + id);
+      }
+    }, wasOpen ? 350 : 0);
   };
 
   window.goHome = function(e){
     e.preventDefault();
-    document.body.classList.remove('sub-active');
-    document.querySelectorAll('.sub').forEach(s=>s.classList.remove('active'));
-    window.scrollTo(0,0);
-    onScroll();
+    activateSub('home');
+    history.pushState(null, '', window.location.pathname);
   };
+
+  /* ── Hash routing on load & back/forward ── */
+  window.addEventListener('DOMContentLoaded', function(){
+    const hash = window.location.hash.slice(1);
+    if(hash) activateSub(hash);
+  });
+
+  window.addEventListener('popstate', function(){
+    const hash = window.location.hash.slice(1);
+    activateSub(hash || 'home');
+  });
 
   /* ── Menu day tabs ── */
   window.switchDay = function(n){
