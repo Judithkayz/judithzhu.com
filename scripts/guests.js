@@ -116,11 +116,12 @@
 
     var html = list.map(function(g) {
       var acqText = g.acquaintance < 1 ? "A few months" : g.acquaintance + " yr" + (g.acquaintance !== 1 ? "s" : "");
-      var nats = g.nationalities.length > 0 ? g.nationalities.join(" · ") : "Very Good Dog";
       var floorNum = floorFromRoom(g.room);
       var floorLabel = floorNum ? " · Floor " + floorNum : "";
       var roomTag = g.room ? '<span style="' + tagStyle + '">Room ' + g.room + floorLabel + '</span>' : "";
-      var passTag = g.passports > 1 ? '<span style="' + tagStyle + '">' + g.passports + ' Passports</span>' : "";
+      var natTags = g.nationalities.length > 0
+        ? g.nationalities.map(function(n){ return '<span style="' + tagStyle + '">' + n + '</span>'; }).join('')
+        : '<span style="' + tagStyle + '">Very Good Dog</span>';
 
       var photoInner = g.photo
         ? '<img src="' + g.photo + '" style="width:100%;height:100%;object-fit:cover;object-position:' + (g.photoPosition || 'center top') + ';display:block;">'
@@ -141,11 +142,11 @@
             return '<div style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:12px;color:rgba(42,31,24,0.5);line-height:1.58;margin-bottom:10px;flex:1;">' + html + '</div>';
           })()
         + '<div style="display:flex;flex-wrap:wrap;gap:3px;">'
-        + '<span style="' + tagStyle + '">' + nats + '</span>'
+        + natTags
         + '<span style="' + tagStyle + '">' + g.status + '</span>'
         + (g.age ? '<span style="' + tagStyle + '">' + g.age + '</span>' : '')
         + '<span style="' + tagStyle + '">Known ' + acqText + '</span>'
-        + roomTag + passTag
+        + roomTag
         + '</div>'
         + '</div>'
         + '</div>';
