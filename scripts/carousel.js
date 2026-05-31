@@ -168,3 +168,34 @@
   function jcPrev() { jcGo(jcIdx - 1); }
   // Auto-advance
   setInterval(function(){ if (document.body.classList.contains('sub-active')) jcNext(); }, 3800);
+
+  /* ── Photo Hunt password gate ── */
+  window.huntUnlock = function() {
+    var pw = (document.getElementById('hunt-pw') || {}).value || '';
+    if (pw.toLowerCase().trim() === 'thatshot') {
+      var gate = document.getElementById('hunt-gate');
+      var content = document.getElementById('hunt-content');
+      if (gate) gate.style.display = 'none';
+      if (content) content.style.display = 'block';
+      sessionStorage.setItem('hunt-unlocked', '1');
+    } else {
+      var err = document.getElementById('hunt-err');
+      if (err) err.style.display = 'block';
+    }
+  };
+
+  /* Restore hunt unlock state when sub-hunt becomes active */
+  var _origOpenSub = window.openSub;
+  window.openSub = function(e, id) {
+    _origOpenSub(e, id);
+    if (id === 'hunt') {
+      setTimeout(function() {
+        if (sessionStorage.getItem('hunt-unlocked') === '1') {
+          var gate = document.getElementById('hunt-gate');
+          var content = document.getElementById('hunt-content');
+          if (gate) gate.style.display = 'none';
+          if (content) content.style.display = 'block';
+        }
+      }, 400);
+    }
+  };

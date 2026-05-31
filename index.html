@@ -90,6 +90,12 @@
         <span class="ov-link__title">What Remains Unsaid</span>
         <span class="ov-link__teaser">Practicalities, refined</span>
       </a>
+      <a class="ov-link" href="#" onclick="openSub(event,'games')">
+        <div class="ov-link__bar"></div>
+        <span class="ov-link__num">X</span>
+        <span class="ov-link__title">The Games</span>
+        <span class="ov-link__teaser">Hunt, trivia, karaoke</span>
+      </a>
     </nav>
     <aside class="overlay__panel" aria-hidden="true">
       <div>
@@ -640,7 +646,7 @@
     <div class="sched-item"><div class="sched__time">Morning</div><div><div class="sched__event">French Breakfast</div><div class="sched__detail">Pastries and bread from the boulangerie. Flexible timing — no alarm clocks. <a href="#menu" onclick="openSub(event,'menu')" style="color:var(--gold);text-decoration:none;">See the menu →</a></div></div></div>
     <div class="sched-item"><div class="sched__time">10:00</div><div><div class="sched__event">Yoga</div><div class="sched__detail">Private yoga lesson by the lake. Participation entirely optional. Recovery strongly encouraged.</div></div></div>
     <div class="sched-item"><div class="sched__time">Midday</div><div><div class="sched__event">Lounge &amp; Lunch</div><div class="sched__detail">Catered salads, sandwiches, and the usual grazing spread. <a href="#menu" onclick="openSub(event,'menu')" style="color:var(--gold);text-decoration:none;">See the menu →</a></div></div></div>
-    <div class="sched-item"><div class="sched__time">14:00</div><div><div class="sched__event">Photo Scavenger Hunt</div><div class="sched__detail">Teams, château grounds, mild chaos.</div></div></div>
+    <div class="sched-item"><div class="sched__time">14:00</div><div><div class="sched__event">Photo Scavenger Hunt</div><div class="sched__detail">Teams, château grounds, mild chaos. <a href="#games" onclick="openSub(event,'games')" style="color:var(--gold);text-decoration:none;">The Games →</a></div></div></div>
     <div class="sched-item"><div class="sched__time">16:00</div><div><div class="sched__event">Champagne Tasting</div><div class="sched__detail">A proper one. At the château, no travel required.</div></div></div>
     <div class="sched-item"><div class="sched__time">20:00</div><div><div class="sched__event">The Grand Dinner — Full Service</div><div class="sched__detail">Private chef. Four courses. Dress to impress — <a href="#vibes" onclick="openSub(event,'vibes')" style="color:var(--gold);text-decoration:none;">see After Hours →</a> &nbsp;·&nbsp; <a href="#menu" onclick="openSub(event,'menu')" style="color:var(--gold);text-decoration:none;">see the menu →</a></div></div></div>
     <div class="sched-item"><div class="sched__time">After</div><div><div class="sched__event">Whatever Follows</div><div class="sched__detail">The evening will find its own ending. It always does.</div></div></div>
@@ -679,6 +685,229 @@
         <div style="background:var(--soft-black);padding:14px 18px;"><div style="font-family:'Playfair Display',serif;font-size:20px;color:var(--ivory);">15:30</div><div style="font-size:8px;letter-spacing:.16em;color:var(--text-muted);text-transform:uppercase;margin-top:3px;margin-bottom:6px;">8 seats · ~17:15</div><div style="font-size:11px;color:var(--text-body);line-height:1.7;"><span style="color:var(--ivory);">Lizzie</span> · Gautier · Cesar · Hugo · Jordi · Dino · Verna · Yadi</div></div>
       </div>
     </div>
+  </div><!-- /sub__inner -->
+  </div>
+
+  <!-- THE GAMES HUB -->
+  <div id="sub-games" class="sub">
+  <div class="sub__inner" style="max-width:720px;">
+    <a href="#" class="sub__back" onclick="goHome(event)"><div class="back__line"></div>Return</a>
+    <span class="sub__kicker">Weekend Programme</span>
+    <h1 class="sub__title">The<br><em>Games.</em></h1>
+    <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--text-muted);line-height:1.8;margin-bottom:48px;">Three events, one weekend. Compete, confess, and perform.</p>
+
+    <div style="display:flex;flex-direction:column;gap:2px;">
+
+      <!-- PHOTO SCAVENGER HUNT -->
+      <a href="#hunt" onclick="openSub(event,'hunt')" style="text-decoration:none;display:block;background:var(--soft-black);padding:28px 32px;border-left:3px solid var(--gold);transition:opacity 0.2s;" onmouseover="this.style.opacity='0.75'" onmouseout="this.style.opacity='1'">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+          <div>
+            <div style="font-size:8px;letter-spacing:.32em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;">Saturday · 14:00 · 🔒 Password protected</div>
+            <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--ivory);font-weight:400;letter-spacing:-.01em;">Photo Scavenger Hunt</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:6px;line-height:1.7;">Twenty photo challenges across the château and grounds. Teams compete for glory. See the briefing for full rules and scoring.</div>
+          </div>
+          <div style="font-size:10px;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;white-space:nowrap;">Briefing →</div>
+        </div>
+      </a>
+
+      <!-- TRIVIA -->
+      <a href="#trivia" onclick="openSub(event,'trivia')" style="text-decoration:none;display:block;background:var(--soft-black);padding:28px 32px;border-left:3px solid var(--gold);transition:opacity 0.2s;" onmouseover="this.style.opacity='0.75'" onmouseout="this.style.opacity='1'">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+          <div>
+            <div style="font-size:8px;letter-spacing:.32em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;">Sunday · 21:00</div>
+            <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--ivory);font-weight:400;letter-spacing:-.01em;">Birthday Trivia</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:6px;line-height:1.7;">How well do you know the birthday girl? Questions, rounds, and a crowning ceremony. Teams TBD on the night.</div>
+          </div>
+          <div style="font-size:10px;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;white-space:nowrap;">Details →</div>
+        </div>
+      </a>
+
+      <!-- SLIDESHOW KARAOKE -->
+      <a href="#karaoke" onclick="openSub(event,'karaoke')" style="text-decoration:none;display:block;background:var(--soft-black);padding:28px 32px;border-left:3px solid var(--gold);transition:opacity 0.2s;" onmouseover="this.style.opacity='0.75'" onmouseout="this.style.opacity='1'">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+          <div>
+            <div style="font-size:8px;letter-spacing:.32em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;">Saturday · After Dark</div>
+            <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--ivory);font-weight:400;letter-spacing:-.01em;">Slideshow Karaoke</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:6px;line-height:1.7;">Random slides. Improvised narration. No preparation, no mercy. The best performance wins.</div>
+          </div>
+          <div style="font-size:10px;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;white-space:nowrap;">Details →</div>
+        </div>
+      </a>
+
+    </div>
+  </div><!-- /sub__inner -->
+  </div>
+
+  <!-- TRIVIA -->
+  <div id="sub-trivia" class="sub">
+  <div class="sub__inner" style="max-width:680px;">
+    <a href="#games" onclick="openSub(event,'games')" style="display:inline-flex;align-items:center;gap:8px;font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);text-decoration:none;margin-bottom:52px;"><div style="width:28px;height:1px;background:var(--gold);"></div>The Games</a>
+    <span class="sub__kicker">Sunday · 21:00</span>
+    <h1 class="sub__title">Birthday<br><em>Trivia.</em></h1>
+    <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--text-muted);line-height:1.8;margin-bottom:48px;">How well do you actually know her? Prove it.</p>
+
+    <div style="border:1px solid var(--gold-line);padding:28px 32px;margin-bottom:32px;">
+      <div style="font-size:8px;letter-spacing:.28em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;">Format</div>
+      <p style="font-size:13px;color:var(--text-body);line-height:1.85;margin:0;">Teams of 3–4 compete across multiple rounds of questions about Judith — her life, her opinions, her most unhinged decisions. Points are tallied live. A crown is awarded. Games continue after.</p>
+    </div>
+
+    <div style="border:1px solid var(--gold-line);padding:28px 32px;">
+      <div style="font-size:8px;letter-spacing:.28em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;">The Crowning Ceremony</div>
+      <p style="font-size:13px;color:var(--text-body);line-height:1.85;margin:0;">The winning team nominates a representative to be crowned. All other guests must acknowledge their superiority for the remainder of the evening. Details to follow on the night.</p>
+    </div>
+  </div><!-- /sub__inner -->
+  </div>
+
+  <!-- SLIDESHOW KARAOKE -->
+  <div id="sub-karaoke" class="sub">
+  <div class="sub__inner" style="max-width:680px;">
+    <a href="#games" onclick="openSub(event,'games')" style="display:inline-flex;align-items:center;gap:8px;font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);text-decoration:none;margin-bottom:52px;"><div style="width:28px;height:1px;background:var(--gold);"></div>The Games</a>
+    <span class="sub__kicker">Saturday · After Dark</span>
+    <h1 class="sub__title">Slideshow<br><em>Karaoke.</em></h1>
+    <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--text-muted);line-height:1.8;margin-bottom:48px;">Random slides. Improvised narration. No preparation. No mercy.</p>
+
+    <div style="border:1px solid var(--gold-line);padding:28px 32px;margin-bottom:32px;">
+      <div style="font-size:8px;letter-spacing:.28em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;">How It Works</div>
+      <p style="font-size:13px;color:var(--text-body);line-height:1.85;margin:0;">A random slide deck is projected. Participants come up one at a time and narrate whatever appears on screen — improvised, live, with full commitment. The audience votes on each performance. The best storyteller of the night wins.</p>
+    </div>
+
+    <div style="border:1px solid var(--gold-line);padding:28px 32px;">
+      <div style="font-size:8px;letter-spacing:.28em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;">Rules</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="font-size:13px;color:var(--text-body);line-height:1.7;">You have 3 minutes per slide deck.</div>
+        <div style="font-size:13px;color:var(--text-body);line-height:1.7;">No preparation — slides are revealed only when you step up.</div>
+        <div style="font-size:13px;color:var(--text-body);line-height:1.7;">Audience scores on: creativity, confidence, commitment.</div>
+        <div style="font-size:13px;color:var(--text-body);line-height:1.7;">Judges' decisions are final and entirely subjective.</div>
+      </div>
+    </div>
+  </div><!-- /sub__inner -->
+  </div>
+
+  <!-- PHOTO HUNT -->
+  <div id="sub-hunt" class="sub">
+  <div class="sub__inner" style="max-width:680px;">
+    <a href="#games" onclick="openSub(event,'games')" style="display:inline-flex;align-items:center;gap:8px;font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);text-decoration:none;margin-bottom:52px;"><div style="width:28px;height:1px;background:var(--gold);"></div>The Games</a>
+
+    <!-- PASSWORD GATE -->
+    <div id="hunt-gate" style="min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px 0;">
+      <div style="font-size:28px;margin-bottom:24px;opacity:0.55;">🔒</div>
+      <div style="font-size:8px;letter-spacing:.38em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;">Restricted</div>
+      <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--text-muted);margin-bottom:32px;">Enter the password to access the briefing.</p>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;width:100%;max-width:280px;">
+        <input id="hunt-pw" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')huntUnlock()" style="width:100%;background:var(--soft-black);border:1px solid var(--gold-line);color:var(--ivory);font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:.06em;padding:12px 16px;outline:none;text-align:center;box-sizing:border-box;">
+        <button onclick="huntUnlock()" style="width:100%;background:none;border:1px solid rgba(138,96,48,0.7);color:var(--gold);font-family:'DM Sans',sans-serif;font-size:8px;letter-spacing:.26em;text-transform:uppercase;padding:12px 24px;cursor:pointer;">Unlock</button>
+        <div id="hunt-err" style="display:none;font-size:11px;letter-spacing:.14em;color:rgba(180,60,60,0.8);text-transform:uppercase;">Wrong password.</div>
+      </div>
+    </div>
+
+    <!-- HUNT CONTENT (hidden until unlocked) -->
+    <div id="hunt-content" style="display:none;">
+      <span class="sub__kicker">Saturday 6 June · 14:00</span>
+      <h1 class="sub__title">Photo<br><em>Hunt.</em></h1>
+      <div class="sub__rule"></div>
+      <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--text-muted);line-height:1.9;margin-bottom:48px;">1 hour. Teams of 4–5, preassigned. May the odds be ever in your favor.</p>
+
+      <!-- FIRST TASK -->
+      <div style="border:1px solid var(--gold-line);padding:24px 28px;margin-bottom:48px;">
+        <div style="font-size:8px;letter-spacing:.38em;color:var(--gold);text-transform:uppercase;margin-bottom:14px;">First Task</div>
+        <p style="font-size:13px;color:var(--text-body);line-height:1.85;margin:0 0 10px;">Create a WhatsApp group:</p>
+        <ul style="list-style:none;padding:0;margin:0;font-size:13px;color:var(--text-body);line-height:2;">
+          <li style="padding-left:16px;">· Choose a team name</li>
+          <li style="padding-left:16px;">· Add Judith</li>
+          <li style="padding-left:16px;">· Post every submission there</li>
+        </ul>
+        <p style="font-size:13px;color:var(--text-muted);margin:14px 0 0;font-style:italic;">Once the timer starts, the hunt begins.</p>
+      </div>
+
+      <div style="height:1px;background:var(--gold-line);margin:0 0 48px;"></div>
+
+      <!-- SCORING -->
+      <div style="font-size:8px;letter-spacing:.38em;color:var(--gold);text-transform:uppercase;margin-bottom:20px;">Scoring</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--gold-line);border:1px solid var(--gold-line);margin-bottom:20px;">
+        <div style="background:var(--soft-black);padding:16px 20px;">
+          <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--ivory);line-height:1;margin-bottom:4px;">1 pt</div>
+          <div style="font-size:8px;letter-spacing:.16em;color:var(--text-muted);text-transform:uppercase;">Completed challenge</div>
+        </div>
+        <div style="background:var(--soft-black);padding:16px 20px;">
+          <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--ivory);line-height:1;margin-bottom:4px;">+3 pts</div>
+          <div style="font-size:8px;letter-spacing:.16em;color:var(--text-muted);text-transform:uppercase;">Crowd pleaser</div>
+        </div>
+        <div style="background:var(--soft-black);padding:16px 20px;grid-column:1/-1;">
+          <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--ivory);line-height:1;margin-bottom:4px;">+3 pts</div>
+          <div style="font-size:8px;letter-spacing:.16em;color:var(--text-muted);text-transform:uppercase;">Judith's personal favorites</div>
+        </div>
+      </div>
+      <div style="border:1px solid var(--gold-line);padding:20px 24px;margin-bottom:48px;">
+        <div style="font-size:8px;letter-spacing:.28em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;">Additional Bonus Points For</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          <span style="font-size:8px;letter-spacing:.14em;padding:4px 10px;border:1px solid rgba(138,96,48,0.35);color:var(--text-muted);text-transform:uppercase;">Commitment to the bit</span>
+          <span style="font-size:8px;letter-spacing:.14em;padding:4px 10px;border:1px solid rgba(138,96,48,0.35);color:var(--text-muted);text-transform:uppercase;">Cinematic excellence</span>
+          <span style="font-size:8px;letter-spacing:.14em;padding:4px 10px;border:1px solid rgba(138,96,48,0.35);color:var(--text-muted);text-transform:uppercase;">Public embarrassment</span>
+          <span style="font-size:8px;letter-spacing:.14em;padding:4px 10px;border:1px solid rgba(138,96,48,0.35);color:var(--text-muted);text-transform:uppercase;">Confusion</span>
+          <span style="font-size:8px;letter-spacing:.14em;padding:4px 10px;border:1px solid rgba(138,96,48,0.35);color:var(--text-muted);text-transform:uppercase;">Dramatic acting</span>
+          <span style="font-size:8px;letter-spacing:.14em;padding:4px 10px;border:1px solid rgba(138,96,48,0.35);color:var(--text-muted);text-transform:uppercase;">Unnecessary editing</span>
+          <span style="font-size:8px;letter-spacing:.14em;padding:4px 10px;border:1px solid rgba(138,96,48,0.35);color:var(--text-muted);text-transform:uppercase;">Elite improvisation</span>
+          <span style="font-size:8px;letter-spacing:.14em;padding:4px 10px;border:1px solid rgba(138,96,48,0.35);color:var(--text-muted);text-transform:uppercase;">Making strangers concerned</span>
+        </div>
+        <p style="font-size:12px;color:var(--gold);margin:16px 0 0;letter-spacing:.04em;">Winning team gets a prize.</p>
+      </div>
+
+      <div style="height:1px;background:var(--gold-line);margin:0 0 48px;"></div>
+
+      <!-- RULES -->
+      <div style="font-size:8px;letter-spacing:.38em;color:var(--gold);text-transform:uppercase;margin-bottom:20px;">Rules</div>
+      <div style="display:flex;flex-direction:column;gap:0;border:1px solid var(--gold-line);margin-bottom:48px;">
+        <div style="padding:12px 20px;border-bottom:1px solid var(--gold-line);font-size:12.5px;color:var(--text-body);line-height:1.6;">Everything must happen after the game starts — no old photos or videos from camera rolls.</div>
+        <div style="padding:12px 20px;border-bottom:1px solid var(--gold-line);font-size:12.5px;color:var(--text-body);line-height:1.6;">Mild scheming is encouraged. Bribery is legal but embarrassing.</div>
+        <div style="padding:12px 20px;border-bottom:1px solid var(--gold-line);font-size:12.5px;color:var(--text-body);line-height:1.6;">Public shame is temporary. Glory is forever.</div>
+        <div style="padding:12px 20px;border-bottom:1px solid var(--gold-line);font-size:12.5px;color:var(--text-body);line-height:1.6;">If a challenge becomes emotionally charged, lean in. If your team says "this is a bad idea," it's probably worth points.</div>
+        <div style="padding:12px 20px;border-bottom:1px solid var(--gold-line);font-size:12.5px;color:var(--text-body);line-height:1.6;">Videos under 30 seconds unless they deserve an Oscar.</div>
+        <div style="padding:12px 20px;border-bottom:1px solid var(--gold-line);font-size:12.5px;color:var(--text-body);line-height:1.6;">No actual crimes. No permanent injuries. Late submissions do not count, even if they're masterpieces.</div>
+        <div style="padding:12px 20px;border-bottom:1px solid var(--gold-line);font-size:12.5px;color:var(--text-body);line-height:1.6;">No voting for your own team — that's pathetic.</div>
+        <div style="padding:12px 20px;font-size:12.5px;color:var(--text-body);line-height:1.6;">If there's a tie, Judith becomes a completely unbiased dictator.</div>
+      </div>
+
+      <div style="height:1px;background:var(--gold-line);margin:0 0 48px;"></div>
+
+      <!-- CHALLENGES -->
+      <div style="font-size:8px;letter-spacing:.38em;color:var(--gold);text-transform:uppercase;margin-bottom:20px;">Challenges</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--gold-line);border:1px solid var(--gold-line);margin-bottom:48px;">
+        <div style="background:var(--soft-black);padding:14px 18px;font-size:12.5px;color:var(--text-body);line-height:1.5;">Someone in the pool</div>
+        <div style="background:var(--soft-black);padding:14px 18px;font-size:12.5px;color:var(--text-body);line-height:1.5;">Two members taking a shot</div>
+        <div style="background:var(--soft-black);padding:14px 18px;font-size:12.5px;color:var(--text-body);line-height:1.5;">A video of you teaching the youngest member of this entire group a millennial thing</div>
+        <div style="background:var(--soft-black);padding:14px 18px;font-size:12.5px;color:var(--text-body);line-height:1.5;">Something purple</div>
+        <div style="background:var(--soft-black);padding:14px 18px;font-size:12.5px;color:var(--text-body);line-height:1.5;">Food that has been eaten</div>
+        <div style="background:var(--soft-black);padding:14px 18px;font-size:12.5px;color:var(--text-body);line-height:1.5;">The largest sum of cash you can find</div>
+        <div style="background:var(--soft-black);padding:14px 18px;font-size:12.5px;color:var(--text-body);line-height:1.5;">Something meta</div>
+        <div style="background:var(--soft-black);padding:14px 18px;font-size:12.5px;color:var(--text-body);line-height:1.5;">Something that scares you</div>
+        <div style="background:var(--soft-black);padding:14px 18px;font-size:12.5px;color:var(--text-body);line-height:1.5;">Your best imitation of Judith</div>
+        <div style="background:var(--soft-black);padding:14px 18px;font-size:12.5px;color:var(--text-body);line-height:1.5;">The oldest thing you can find</div>
+        <div style="background:var(--soft-black);padding:14px 18px;font-size:12.5px;color:var(--text-body);line-height:1.5;">The oddest thing you can find</div>
+        <div style="background:var(--soft-black);padding:14px 18px;font-size:12.5px;color:var(--text-body);line-height:1.5;">Something that makes you happy</div>
+        <div style="background:var(--soft-black);padding:14px 18px;font-size:12.5px;color:var(--text-body);line-height:1.5;">Two people meeting for the first time at this event</div>
+        <div style="background:var(--soft-black);padding:14px 18px;font-size:12.5px;color:var(--text-body);line-height:1.5;">The most French thing you can find</div>
+        <div style="background:var(--soft-black);padding:14px 18px;font-size:12.5px;color:var(--text-body);line-height:1.5;">The most American thing you can find</div>
+        <div style="background:var(--soft-black);padding:14px 18px;font-size:12.5px;color:var(--text-body);line-height:1.5;">Your best tune</div>
+        <div style="background:var(--soft-black);padding:14px 18px;font-size:12.5px;color:var(--text-body);line-height:1.5;">The most suspicious photo possible</div>
+        <div style="background:var(--soft-black);padding:14px 18px;font-size:12.5px;color:var(--text-body);line-height:1.5;">A luxury ad for a terrible object</div>
+        <div style="background:var(--soft-black);padding:14px 18px;font-size:12.5px;color:var(--text-body);line-height:1.5;">Your interpretation of a Renaissance painting</div>
+        <div style="background:var(--soft-black);padding:14px 18px;font-size:12.5px;color:var(--text-body);line-height:1.5;">Accidental album cover</div>
+      </div>
+
+      <div style="height:1px;background:var(--gold-line);margin:0 0 48px;"></div>
+
+      <!-- VOTING -->
+      <div style="font-size:8px;letter-spacing:.38em;color:var(--gold);text-transform:uppercase;margin-bottom:20px;">Voting</div>
+      <div style="display:flex;flex-direction:column;gap:0;border:1px solid var(--gold-line);margin-bottom:56px;">
+        <div style="padding:14px 20px;border-bottom:1px solid var(--gold-line);font-size:12.5px;color:var(--text-body);">Everyone votes</div>
+        <div style="padding:14px 20px;border-bottom:1px solid var(--gold-line);font-size:12.5px;color:var(--text-body);">Crowd Pleasers are chosen</div>
+        <div style="padding:14px 20px;border-bottom:1px solid var(--gold-line);font-size:12.5px;color:var(--text-body);">Judith distributes bonus points irresponsibly</div>
+        <div style="padding:14px 20px;font-size:12.5px;color:var(--text-body);">Winners receive glory, admiration, and possibly a prize</div>
+      </div>
+
+      <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:rgba(42,31,24,0.3);text-align:center;letter-spacing:.04em;">May the odds be ever in your favor.</p>
+    </div>
+
   </div><!-- /sub__inner -->
   </div>
 

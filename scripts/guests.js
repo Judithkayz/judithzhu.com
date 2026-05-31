@@ -120,7 +120,7 @@
         : '<span style="' + tagStyle + '">Very Good Dog</span>';
 
       var photoInner = g.photo
-        ? '<img src="' + g.photo + '" style="width:100%;height:100%;object-fit:cover;object-position:' + (g.photoPosition || 'center top') + ';display:block;transform:scale(0.9);">'
+        ? '<img src="' + g.photo + '" style="width:100%;height:100%;object-fit:cover;object-position:' + (g.photoPosition || 'center top') + ';display:block;">'
         : '<div style="display:flex;flex-direction:column;align-items:center;gap:5px;"><div style="font-family:\'Playfair Display\',serif;font-size:22px;font-weight:300;color:#8a6030;opacity:0.42;letter-spacing:.05em;">' + g.initials + '</div><div style="font-size:7px;letter-spacing:.26em;color:rgba(42,31,24,0.25);text-transform:uppercase;">Photo</div></div>';
       return '<div style="background:rgba(255,252,248,0.55);display:flex;flex-direction:column;">'
         + '<div style="width:100%;aspect-ratio:1;background:#e8ddd0;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:110px;border-radius:50%;">'
