@@ -194,3 +194,28 @@
   document.addEventListener('DOMContentLoaded', function() {
     if (window.location.hash === '#hunt') huntRestoreIfUnlocked();
   });
+
+  /* ── Karaoke Showdown password gate ── */
+  function karaokeShowdownRestoreIfUnlocked() {
+    if (sessionStorage.getItem('karaoke-showdown-unlocked') === '1') {
+      var gate = document.getElementById('karaoke-showdown-gate');
+      var content = document.getElementById('karaoke-showdown-content');
+      if (gate) gate.style.display = 'none';
+      if (content) content.style.display = 'block';
+    }
+  }
+
+  window.karaokeShowdownUnlock = function() {
+    var pw = (document.getElementById('karaoke-showdown-pw') || {}).value || '';
+    if (pw.toLowerCase().trim() === 'abba') {
+      sessionStorage.setItem('karaoke-showdown-unlocked', '1');
+      karaokeShowdownRestoreIfUnlocked();
+    } else {
+      var err = document.getElementById('karaoke-showdown-err');
+      if (err) err.style.display = 'block';
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.location.hash === '#karaoke-showdown') karaokeShowdownRestoreIfUnlocked();
+  });

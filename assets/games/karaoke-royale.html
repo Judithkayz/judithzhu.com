@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karaoke Royale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #06050f;
+  --bg2: #0d0b1e;
+  --bg3: #13112a;
+  --neon: #ff2d78;
+  --neon2: #7b2fff;
+  --neon3: #00e5ff;
+  --gold: #ffcc00;
+  --gold2: #ff9900;
+  --green: #00ff88;
+  --red: #ff3355;
+  --text: #f0eeff;
+  --dim: #6060a0;
+  --mid: #a090d0;
+  --glow-pink: rgba(255,45,120,0.35);
+  --glow-purple: rgba(123,47,255,0.35);
+  --glow-cyan: rgba(0,229,255,0.3);
+  --font-display: 'Bebas Neue', impact, sans-serif;
+  --font-body: 'Outfit', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+html,body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  font-size:15px;
+  line-height:1.5;
+  min-height:100vh;
+  overflow-x:hidden;
+  cursor:default;
+}
+
+/* ── Canvas background ── */
+#bg-canvas{
+  position:fixed;inset:0;z-index:0;
+  pointer-events:none;
+  opacity:0.6;
+}
+
+/* ── Scanlines overlay ── */
+body::after{
+  content:'';
+  position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.08) 2px,rgba(0,0,0,0.08) 4px);
+  pointer-events:none;z-index:1;
+}
+
+/* ── App shell ── */
+#app{position:relative;z-index:2;min-height:100vh;}
+
+/* ── Screen transitions ── */
+.screen{display:none;animation:screenIn 0.4s cubic-bezier(.2,0,.1,1) both;}
+.screen.active{display:block;}
+@keyframes screenIn{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* ── Neon text ── */
+.neon-text{
+  text-shadow:0 0 10px currentColor,0 0 30px currentColor,0 0 60px currentColor;
+}
+
+/* ── Glitch animation ── */
+@keyframes glitch{
+  0%,95%,100%{transform:translate(0);}
+  96%{transform:translate(-3px,1px);filter:hue-rotate(90deg);}
+  97%{transform:translate(3px,-1px);filter:hue-rotate(-90deg);}
+  98%{transform:translate(-2px,0);filter:none;}
+  99%{transform:translate(2px,1px);}
+}
+.glitch{animation:glitch 4s infinite;}
+
+/* ── Logo ── */
+.logo-wrap{
+  padding:3rem 1.5rem 2rem;
+  text-align:center;
+  position:relative;
+}
+.logo-top{
+  font-family:var(--font-mono);
+  font-size:11px;letter-spacing:.35em;
+  color:var(--neon3);text-transform:uppercase;
+  margin-bottom:12px;
+  text-shadow:0 0 12px var(--neon3);
+}
+.logo-main{
+  font-family:var(--font-display);
+  font-size:clamp(70px,18vw,120px);
+  line-height:.9;
+  letter-spacing:.02em;
+  color:var(--gold);
+  text-shadow:0 0 20px var(--gold),0 0 60px rgba(255,204,0,0.4),4px 4px 0 #7b2fff,6px 6px 0 rgba(123,47,255,0.3);
+}
+.logo-royale{
+  font-family:var(--font-display);
+  font-size:clamp(40px,12vw,80px);
+  line-height:1;
+  letter-spacing:.15em;
+  color:var(--neon);
+  text-shadow:0 0 15px var(--neon),0 0 50px var(--glow-pink),2px 2px 0 #000;
+  display:block;
+  margin-top:-8px;
+}
+.logo-tagline{
+  font-family:var(--font-mono);
+  font-size:11px;letter-spacing:.2em;
+  color:var(--dim);text-transform:uppercase;
+  margin-top:14px;
+}
+
+/* ── Stat bar ── */
+.stat-bar{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  border-top:1px solid rgba(255,45,120,.2);
+  border-bottom:1px solid rgba(255,45,120,.2);
+  background:rgba(255,45,120,.04);
+  margin:0 0 1.5rem;
+}
+.stat-cell{
+  padding:.85rem .5rem;
+  text-align:center;
+  border-right:1px solid rgba(255,45,120,.15);
+  position:relative;
+}
+.stat-cell:last-child{border-right:none;}
+.stat-val{
+  font-family:var(--font-display);
+  font-size:32px;color:var(--gold);
+  line-height:1;
+  text-shadow:0 0 12px rgba(255,204,0,.5);
+}
+.stat-lbl{
+  font-family:var(--font-mono);
+  font-size:10px;color:var(--dim);
+  text-transform:uppercase;letter-spacing:.1em;
+  margin-top:3px;
+}
+
+/* ── Buttons ── */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 22px;
+  font-family:var(--font-body);font-size:13px;font-weight:600;
+  letter-spacing:.06em;text-transform:uppercase;
+  border:1px solid;border-radius:2px;
+  cursor:pointer;
+  transition:all .2s;
+  position:relative;overflow:hidden;
+  background:transparent;
+}
+.btn::before{
+  content:'';position:absolute;inset:0;
+  background:currentColor;opacity:0;
+  transition:opacity .2s;
+}
+.btn:hover::before{opacity:.1;}
+.btn:active{transform:scale(.97);}
+
+.btn-neon{
+  color:var(--neon);border-color:var(--neon);
+  box-shadow:0 0 12px var(--glow-pink) inset,0 0 20px var(--glow-pink);
+}
+.btn-neon:hover{box-shadow:0 0 20px var(--glow-pink) inset,0 0 40px var(--glow-pink);}
+
+.btn-gold{
+  color:#000;background:var(--gold);border-color:var(--gold);
+  box-shadow:0 0 20px rgba(255,204,0,.4);font-weight:700;
+}
+.btn-gold:hover{background:var(--gold2);box-shadow:0 0 35px rgba(255,204,0,.6);}
+
+.btn-cyan{
+  color:var(--neon3);border-color:var(--neon3);
+  box-shadow:0 0 12px var(--glow-cyan) inset,0 0 20px var(--glow-cyan);
+}
+.btn-cyan:hover{box-shadow:0 0 24px var(--glow-cyan) inset,0 0 45px var(--glow-cyan);}
+
+.btn-pass{
+  color:var(--green);border-color:var(--green);
+  box-shadow:0 0 16px rgba(0,255,136,.25) inset,0 0 24px rgba(0,255,136,.2);
+}
+.btn-pass:hover{box-shadow:0 0 30px rgba(0,255,136,.4) inset,0 0 50px rgba(0,255,136,.35);}
+
+.btn-fail{
+  color:var(--red);border-color:var(--red);
+  box-shadow:0 0 16px rgba(255,51,85,.25) inset,0 0 24px rgba(255,51,85,.2);
+}
+.btn-fail:hover{box-shadow:0 0 30px rgba(255,51,85,.4) inset,0 0 50px rgba(255,51,85,.35);}
+
+.btn-ghost{
+  color:var(--dim);border-color:rgba(96,96,160,.35);
+}
+.btn-ghost:hover{color:var(--mid);border-color:var(--mid);}
+
+.btn-sm{padding:7px 16px;font-size:12px;}
+
+/* ── Top bar ── */
+.topbar{
+  display:flex;align-items:center;gap:12px;
+  padding:.85rem 1.25rem;
+  border-bottom:1px solid rgba(255,45,120,.2);
+  background:rgba(6,5,15,.85);
+  backdrop-filter:blur(8px);
+  position:sticky;top:0;z-index:20;
+}
+.topbar-title{
+  font-family:var(--font-display);
+  font-size:22px;letter-spacing:.08em;
+  color:var(--neon);
+  text-shadow:0 0 12px var(--glow-pink);
+  flex:1;
+}
+
+/* ── Player card ── */
+.player-card{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 16px;
+  border-bottom:1px solid rgba(123,47,255,.15);
+  cursor:pointer;
+  transition:all .18s;
+  position:relative;
+  overflow:hidden;
+}
+.player-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:3px;
+  background:var(--neon);
+  transform:scaleY(0);
+  transform-origin:center;
+  transition:transform .2s;
+}
+.player-card:hover{background:rgba(255,45,120,.06);}
+.player-card:hover::before{transform:scaleY(1);}
+.player-card.eliminated{opacity:.3;cursor:default;pointer-events:none;}
+
+/* ── Avatar ── */
+.avatar{
+  width:40px;height:40px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:18px;
+  flex-shrink:0;position:relative;
+}
+.avatar::after{
+  content:'';position:absolute;inset:-2px;
+  border-radius:50%;
+  border:1.5px solid currentColor;
+  opacity:.5;
+}
+
+/* ── Song card ── */
+.song-card{
+  margin:1.25rem;
+  border:1px solid rgba(255,204,0,.3);
+  border-radius:4px;
+  padding:1.75rem;
+  position:relative;
+  overflow:hidden;
+  background:rgba(13,11,30,.8);
+}
+.song-card::before{
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--neon2),var(--gold),var(--neon));
+}
+.song-card-num{
+  font-family:var(--font-mono);font-size:10px;
+  color:var(--dim);letter-spacing:.2em;text-transform:uppercase;
+  margin-bottom:1rem;
+}
+.song-title{
+  font-family:var(--font-display);
+  font-size:clamp(28px,5vw,44px);
+  letter-spacing:.02em;line-height:1.1;
+  color:var(--text);
+  text-shadow:0 2px 20px rgba(123,47,255,.4);
+  margin-bottom:6px;
+}
+.song-artist{
+  font-family:var(--font-mono);font-size:13px;
+  color:var(--mid);font-style:italic;
+}
+.verse-rule{
+  display:flex;align-items:center;gap:10px;
+  margin-top:1.25rem;padding:10px 14px;
+  border:1px solid rgba(255,204,0,.25);
+  background:rgba(255,204,0,.05);
+  border-radius:2px;
+  font-family:var(--font-mono);font-size:12px;
+  color:var(--gold);letter-spacing:.03em;
+}
+.genre-pill{
+  display:inline-block;
+  padding:3px 12px;border-radius:1px;
+  font-family:var(--font-mono);font-size:10px;
+  font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  background:rgba(0,229,255,.1);
+  color:var(--neon3);
+  border:1px solid rgba(0,229,255,.25);
+  text-shadow:0 0 8px var(--neon3);
+}
+
+/* ── Vote zone ── */
+.vote-zone{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:1px;background:rgba(255,255,255,.05);
+  margin:1.25rem;
+}
+.vote-btn{
+  background:var(--bg2);
+  border:none;padding:2rem 1rem;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  cursor:pointer;transition:all .2s;
+  font-family:var(--font-body);
+}
+.vote-pass-btn{color:var(--green);}
+.vote-pass-btn:hover{background:rgba(0,255,136,.08);box-shadow:inset 0 0 40px rgba(0,255,136,.1);}
+.vote-fail-btn{color:var(--red);}
+.vote-fail-btn:hover{background:rgba(255,51,85,.08);box-shadow:inset 0 0 40px rgba(255,51,85,.1);}
+.vote-icon-big{font-size:40px;line-height:1;}
+.vote-label{
+  font-family:var(--font-display);font-size:22px;
+  letter-spacing:.08em;
+}
+.vote-sub{font-size:11px;color:var(--dim);font-family:var(--font-mono);letter-spacing:.05em;}
+
+/* ── Singer display ── */
+.singer-wrap{
+  display:flex;align-items:center;gap:14px;
+  padding:1rem 1.25rem;
+  background:rgba(255,45,120,.04);
+  border-bottom:1px solid rgba(255,45,120,.15);
+}
+
+/* ── Next picker ── */
+.next-chip{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 14px;
+  border:1px solid rgba(123,47,255,.3);
+  border-radius:2px;background:transparent;
+  color:var(--mid);
+  font-family:var(--font-body);font-size:13px;
+  cursor:pointer;transition:all .18s;
+}
+.next-chip:hover{border-color:var(--neon2);color:var(--neon2);background:rgba(123,47,255,.08);}
+.next-chip.selected{border-color:var(--gold);color:var(--gold);background:rgba(255,204,0,.08);box-shadow:0 0 12px rgba(255,204,0,.15);}
+
+/* ── Verdict screen ── */
+.verdict-full{
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:2rem 1.5rem;text-align:center;
+  position:relative;
+}
+.verdict-bg{
+  position:absolute;inset:0;
+  transition:background .3s;
+  z-index:-1;
+}
+.verdict-icon{font-size:80px;line-height:1;margin-bottom:1.5rem;}
+.verdict-name{
+  font-family:var(--font-display);
+  font-size:clamp(40px,10vw,72px);
+  letter-spacing:.04em;line-height:1;
+  margin-bottom:.5rem;
+}
+.verdict-status{
+  font-family:var(--font-display);
+  font-size:clamp(20px,5vw,36px);
+  letter-spacing:.2em;
+  margin-bottom:1rem;
+}
+.verdict-song{
+  font-family:var(--font-mono);font-size:13px;
+  color:var(--mid);max-width:340px;
+  line-height:1.6;margin-bottom:2rem;
+}
+
+/* ── Winner screen ── */
+.winner-hero{
+  padding:3rem 1.5rem 2rem;text-align:center;
+  position:relative;
+}
+.crown-icon{
+  font-size:72px;display:inline-block;
+  animation:crownPulse 2s infinite;
+  filter:drop-shadow(0 0 20px var(--gold));
+}
+@keyframes crownPulse{
+  0%,100%{transform:scale(1) rotate(-2deg);filter:drop-shadow(0 0 20px var(--gold));}
+  50%{transform:scale(1.08) rotate(2deg);filter:drop-shadow(0 0 40px var(--gold)) drop-shadow(0 0 60px var(--gold2));}
+}
+.winner-name{
+  font-family:var(--font-display);
+  font-size:clamp(50px,14vw,96px);
+  letter-spacing:.02em;line-height:.95;
+  color:var(--gold);
+  text-shadow:0 0 20px rgba(255,204,0,.5),0 0 60px rgba(255,204,0,.25),4px 4px 0 var(--neon2);
+}
+.winner-label{
+  font-family:var(--font-mono);font-size:11px;
+  color:var(--neon3);letter-spacing:.3em;
+  text-transform:uppercase;margin-bottom:8px;
+  text-shadow:0 0 10px var(--neon3);
+}
+
+/* ── Elimination list ── */
+.elim-row{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 16px;
+  border-bottom:1px solid rgba(123,47,255,.1);
+  transition:background .15s;
+}
+.elim-row:hover{background:rgba(123,47,255,.04);}
+.elim-row:last-child{border-bottom:none;}
+.elim-rank{
+  font-family:var(--font-mono);font-size:11px;
+  color:var(--dim);width:28px;text-align:right;
+}
+
+/* ── Rules ── */
+.rule-item{
+  display:flex;gap:1.25rem;
+  padding:1.1rem 1.5rem;
+  border-bottom:1px solid rgba(123,47,255,.15);
+}
+.rule-item:last-child{border-bottom:none;}
+.rule-num{
+  font-family:var(--font-display);font-size:36px;
+  color:var(--neon2);opacity:.4;line-height:1;
+  flex-shrink:0;width:32px;
+  text-shadow:0 0 12px var(--neon2);
+}
+.rule-title{font-weight:600;margin-bottom:4px;font-size:15px;}
+.rule-body{font-size:13px;color:var(--mid);line-height:1.6;}
+
+/* ── Section label ── */
+.section-label{
+  font-family:var(--font-mono);font-size:10px;
+  color:var(--dim);text-transform:uppercase;letter-spacing:.18em;
+  padding:.75rem 1.25rem .4rem;
+}
+
+/* ── Divider ── */
+.divider{
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,45,120,.35),transparent);
+  margin:1.5rem 1.25rem;
+}
+
+/* ── Textarea ── */
+textarea{
+  width:100%;background:rgba(13,11,30,.9);
+  border:1px solid rgba(123,47,255,.3);border-radius:2px;
+  color:var(--text);font-family:var(--font-mono);font-size:13px;
+  padding:1rem;resize:vertical;outline:none;line-height:1.9;
+}
+textarea:focus{border-color:var(--neon2);box-shadow:0 0 0 2px rgba(123,47,255,.15);}
+
+/* ── Bottom action bar ── */
+.action-bar{
+  display:flex;gap:10px;flex-wrap:wrap;
+  padding:1.25rem;
+}
+
+/* ── Animated border ── */
+@keyframes borderSpin{
+  0%{background-position:0% 50%;}
+  100%{background-position:200% 50%;}
+}
+.animated-border{
+  position:relative;
+  padding:1px;
+  background:linear-gradient(90deg,var(--neon),var(--neon2),var(--gold),var(--neon3),var(--neon));
+  background-size:200% 100%;
+  animation:borderSpin 4s linear infinite;
+  border-radius:4px;
+}
+.animated-border-inner{
+  background:var(--bg2);border-radius:3px;
+  padding:1.75rem;
+}
+
+/* ── Home action grid ── */
+.home-actions{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:1px;background:rgba(255,255,255,.05);
+  margin:0 1.25rem 1.25rem;
+}
+.home-action-btn{
+  background:var(--bg2);border:none;
+  padding:1.25rem 1rem;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  cursor:pointer;transition:all .2s;
+  font-family:var(--font-body);
+}
+.home-action-btn:hover{background:rgba(123,47,255,.12);}
+.home-action-icon{font-size:26px;}
+.home-action-label{font-family:var(--font-display);font-size:18px;letter-spacing:.06em;color:var(--text);}
+.home-action-sub{font-family:var(--font-mono);font-size:10px;color:var(--dim);letter-spacing:.08em;}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--neon2);border-radius:2px;}
+
+/* ── Ping animation ── */
+@keyframes ping{
+  0%{transform:scale(1);opacity:1;}
+  75%,100%{transform:scale(2.5);opacity:0;}
+}
+.ping{
+  position:absolute;border-radius:50%;
+  animation:ping 1.5s cubic-bezier(0,0,.2,1) infinite;
+}
+
+@media(max-width:420px){
+  .home-actions{grid-template-columns:1fr;}
+  .vote-zone{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div id="app">
+
+<!-- ══ HOME ══════════════════════════════════════════════ -->
+<div class="screen active" id="s-home">
+  <div class="logo-wrap">
+    <div class="logo-top">&#9733; Judith's &#9733;</div>
+    <div class="logo-main glitch">KARAOKE</div>
+    <span class="logo-royale">ROYALE</span>
+  </div>
+
+  <div class="stat-bar" id="home-stats">
+    <div class="stat-cell"><div class="stat-val" id="h-alive">29</div><div class="stat-lbl">Alive</div></div>
+    <div class="stat-cell"><div class="stat-val" id="h-elim">0</div><div class="stat-lbl">Fallen</div></div>
+    <div class="stat-cell"><div class="stat-val" id="h-round">1</div><div class="stat-lbl">Round</div></div>
+    <div class="stat-cell"><div class="stat-val" id="h-left">200</div><div class="stat-lbl">Songs</div></div>
+  </div>
+
+  <div class="home-actions">
+    <button class="home-action-btn" onclick="drawSong()" style="grid-column:1/-1;background:rgba(255,204,0,.06);border-bottom:1px solid rgba(255,204,0,.15);">
+      <div class="home-action-icon">&#9654;</div>
+      <div class="home-action-label" style="color:var(--gold);font-size:24px;text-shadow:0 0 12px rgba(255,204,0,.5)">Draw Song</div>
+      <div class="home-action-sub">Pull from the deck</div>
+    </button>
+    <button class="home-action-btn" onclick="go('s-setup')">
+      <div class="home-action-icon">&#9881;</div>
+      <div class="home-action-label">Players</div>
+      <div class="home-action-sub">Edit roster</div>
+    </button>
+    <button class="home-action-btn" onclick="go('s-rules')">
+      <div class="home-action-icon">&#9432;</div>
+      <div class="home-action-label">Rules</div>
+      <div class="home-action-sub">How it works</div>
+    </button>
+    <button class="home-action-btn" onclick="go('s-standings')" style="grid-column:1/-1;border-top:1px solid rgba(255,255,255,.04);">
+      <div class="home-action-icon">&#9776;</div>
+      <div class="home-action-label">Standings</div>
+      <div class="home-action-sub">Live leaderboard</div>
+    </button>
+  </div>
+
+  <div class="section-label">Active players — tap to assign</div>
+  <div id="home-players"></div>
+</div>
+
+<!-- ══ RULES ═════════════════════════════════════════════ -->
+<div class="screen" id="s-rules">
+  <div class="topbar">
+    <button class="btn btn-ghost btn-sm" onclick="go('s-home')">&larr;</button>
+    <div class="topbar-title">The Rules</div>
+  </div>
+  <div style="padding:1.25rem 0">
+    <div class="rule-item">
+      <div class="rule-num">I</div>
+      <div><div class="rule-title">Draw a song</div><div class="rule-body">A random track is pulled from the 200-song deck. The active player has no choice — you play what fate gives you.</div></div>
+    </div>
+    <div class="rule-item">
+      <div class="rule-num">II</div>
+      <div><div class="rule-title">Two full verses or you're done</div><div class="rule-body">No humming, no skipping to the chorus, no mumbling. You must deliver at least two recognisable verses. The crowd decides.</div></div>
+    </div>
+    <div class="rule-item">
+      <div class="rule-num">III</div>
+      <div><div class="rule-title">Majority vote</div><div class="rule-body">The group votes Pass or Fail after the performance. Majority rules. A tie goes to the singer — they survive.</div></div>
+    </div>
+    <div class="rule-item">
+      <div class="rule-num">IV</div>
+      <div><div class="rule-title">The condemned's final act</div><div class="rule-body">Fail and you're out. The song returns to the deck. The eliminated player chooses who faces the mic next — their final act of power.</div></div>
+    </div>
+    <div class="rule-item">
+      <div class="rule-num">V</div>
+      <div><div class="rule-title">Last voice standing</div><div class="rule-body">No points. No medals. Pure survival. When one singer remains, they are crowned the Karaoke Royale champion.</div></div>
+    </div>
+  </div>
+  <div style="padding:1.25rem;text-align:center;">
+    <button class="btn btn-gold" onclick="drawSong()">&#9654;&nbsp; Begin the Royale</button>
+  </div>
+</div>
+
+<!-- ══ SETUP ══════════════════════════════════════════════ -->
+<div class="screen" id="s-setup">
+  <div class="topbar">
+    <button class="btn btn-ghost btn-sm" onclick="go('s-home')">&larr;</button>
+    <div class="topbar-title">Edit Players</div>
+  </div>
+  <div style="padding:1.25rem">
+    <p style="color:var(--mid);font-size:13px;margin-bottom:1rem;font-family:var(--font-mono);">One name per line. Save resets the entire game.</p>
+    <textarea id="player-input" rows="15" spellcheck="false"></textarea>
+    <div class="action-bar" style="padding:1rem 0 0">
+      <button class="btn btn-gold" onclick="savePlayers()">&#10003;&nbsp; Save &amp; Reset</button>
+      <button class="btn btn-ghost" onclick="go('s-home')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SONG STAGE ═════════════════════════════════════════ -->
+<div class="screen" id="s-song">
+  <div class="topbar">
+    <button class="btn btn-ghost btn-sm" onclick="go('s-home')">&larr;</button>
+    <div class="topbar-title" id="song-topbar-title">Round 1</div>
+    <div style="font-family:var(--font-mono);font-size:11px;color:var(--neon3);text-shadow:0 0 8px var(--neon3)" id="alive-count">26 alive</div>
+  </div>
+
+  <div class="singer-wrap" id="singer-block">
+    <div class="avatar" id="singer-av" style="background:#1a1030;color:#ff2d78;border-color:#ff2d78">?</div>
+    <div style="flex:1">
+      <div style="font-family:var(--font-mono);font-size:10px;color:var(--dim);letter-spacing:.15em;text-transform:uppercase">On stage now</div>
+      <div style="font-size:17px;font-weight:600" id="singer-nm">—</div>
+    </div>
+    <div class="genre-pill" id="genre-tag">Genre</div>
+  </div>
+
+  <div class="animated-border" style="margin:1.25rem">
+    <div class="animated-border-inner">
+      <div class="song-card-num" id="song-num-lbl">Song — / 200</div>
+      <div class="song-title" id="song-t">—</div>
+      <div class="song-artist" id="song-a">—</div>
+      <div class="verse-rule">
+        &#9834;&nbsp; Minimum <strong style="color:#fff">two full verses</strong> &nbsp;&#9834;
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:0 1.25rem;margin-bottom:.75rem;">
+    <div class="section-label" style="padding:0 0 .5rem">Group verdict</div>
+  </div>
+  <div class="vote-zone">
+    <button class="vote-btn vote-pass-btn" onclick="vote('pass')">
+      <div class="vote-icon-big">&#128077;</div>
+      <div class="vote-label">Pass</div>
+      <div class="vote-sub">They survived</div>
+    </button>
+    <button class="vote-btn vote-fail-btn" onclick="vote('fail')">
+      <div class="vote-icon-big">&#128078;</div>
+      <div class="vote-label">Fail</div>
+      <div class="vote-sub">Eliminated</div>
+    </button>
+  </div>
+  <button onclick="vote('skip')" style="width:100%;background:transparent;border:none;border-top:1px solid rgba(255,255,255,.06);padding:.75rem;color:var(--dim);font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;cursor:pointer;transition:color .2s;" onmouseover="this.style.color='var(--mid)'" onmouseout="this.style.color='var(--dim)'">
+    Song unknown — redraw &#8635;
+  </button>
+
+  <div style="padding:1.25rem">
+    <div class="section-label" style="padding:0 0 .75rem">Condemned picks next victim</div>
+    <div id="next-wrap" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+  </div>
+</div>
+
+<!-- ══ VERDICT ════════════════════════════════════════════ -->
+<div class="screen" id="s-verdict">
+  <div class="verdict-full">
+    <div class="verdict-bg" id="v-bg"></div>
+    <div class="verdict-icon" id="v-icon">—</div>
+    <div class="verdict-name" id="v-name">—</div>
+    <div class="verdict-status" id="v-status">—</div>
+    <div class="verdict-song" id="v-song">—</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center" id="v-btns"></div>
+  </div>
+</div>
+
+<!-- ══ STANDINGS ══════════════════════════════════════════ -->
+<div class="screen" id="s-standings">
+  <div class="topbar">
+    <button class="btn btn-ghost btn-sm" onclick="go('s-home')">&larr;</button>
+    <div class="topbar-title">Standings</div>
+  </div>
+  <div style="padding-bottom:2rem" id="standings-list"></div>
+</div>
+
+<!-- ══ WINNER ══════════════════════════════════════════════ -->
+<div class="screen" id="s-winner">
+  <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.5rem;text-align:center;position:relative;">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(255,204,0,.12) 0%,rgba(255,45,120,.06) 40%,transparent 70%);pointer-events:none;z-index:0;"></div>
+    <div style="position:relative;z-index:1;width:100%;">
+      <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.35em;color:var(--neon3);text-transform:uppercase;text-shadow:0 0 10px var(--neon3);margin-bottom:1rem;">Last voice standing</div>
+      <div class="crown-icon" style="font-size:80px;margin-bottom:.5rem;">&#9813;</div>
+      <div style="font-family:var(--font-display);font-size:clamp(16px,5vw,22px);letter-spacing:.4em;color:var(--neon);text-shadow:0 0 15px var(--glow-pink);text-transform:uppercase;margin-bottom:.75rem;">Karaoke Royale Champion</div>
+      <div class="winner-name glitch" id="w-name" style="margin-bottom:.75rem;">—</div>
+      <p style="font-family:var(--font-mono);font-size:12px;color:var(--mid);margin-bottom:2.5rem;" id="w-sub"></p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:3rem;">
+        <button class="btn btn-gold" onclick="go('s-standings')">&#9776;&nbsp; Final Standings</button>
+        <button class="btn btn-ghost" onclick="resetAll()">&#8635;&nbsp; New Royale</button>
+      </div>
+      <div style="width:100%;border-top:1px solid rgba(255,204,0,.2);padding-top:1.5rem;text-align:left;">
+        <div class="section-label" style="padding:0 0 .75rem;">Fell before glory</div>
+        <div id="w-elim-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- #app -->
+
+<script>
+/* ── Particle canvas ── */
+const canvas=document.getElementById('bg-canvas');
+const ctx=canvas.getContext('2d');
+let W,H,particles=[];
+function resizeCanvas(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+resizeCanvas();
+window.addEventListener('resize',resizeCanvas);
+
+const PCOLORS=['#ff2d78','#7b2fff','#00e5ff','#ffcc00','#00ff88'];
+function mkParticle(){
+  return{
+    x:Math.random()*W,y:Math.random()*H,
+    vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4-.2,
+    size:Math.random()*1.5+.5,
+    color:PCOLORS[Math.floor(Math.random()*PCOLORS.length)],
+    life:Math.random(),
+    decay:Math.random()*.003+.001
+  };
+}
+for(let i=0;i<120;i++)particles.push(mkParticle());
+
+function animCanvas(){
+  ctx.clearRect(0,0,W,H);
+  particles.forEach((p,i)=>{
+    p.x+=p.vx;p.y+=p.vy;p.life-=p.decay;
+    if(p.life<=0||p.x<0||p.x>W||p.y<0||p.y>H){particles[i]=mkParticle();}
+    ctx.globalAlpha=p.life*.7;
+    ctx.fillStyle=p.color;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();
+  });
+  ctx.globalAlpha=1;
+  requestAnimationFrame(animCanvas);
+}
+animCanvas();
+
+/* ── Data ── */
+const SONGS=[
+["Don't Stop Believin'","Journey","Rock"],["Bohemian Rhapsody","Queen","Rock"],["Dancing Queen","ABBA","Pop"],
+["Livin' on a Prayer","Bon Jovi","Rock"],["Sweet Caroline","Neil Diamond","Classic"],["Mr. Brightside","The Killers","Indie"],
+["Total Eclipse of the Heart","Bonnie Tyler","Power Ballad"],["Wonderwall","Oasis","Indie"],["Africa","Toto","80s"],
+["Summer Nights","Grease Cast","Musical"],["I Will Survive","Gloria Gaynor","Disco"],["Shallow","Lady Gaga","Pop Ballad"],
+["Valerie","Amy Winehouse","Soul"],["September","Earth Wind & Fire","Funk"],["Poker Face","Lady Gaga","Pop"],
+["Lose Yourself","Eminem","Hip-Hop"],["Somebody That I Used to Know","Gotye","Indie"],["Under Pressure","Queen","Rock"],
+["Hit Me Baby One More Time","Britney Spears","Pop"],["Gold Digger","Kanye West","Hip-Hop"],["Roxanne","The Police","Rock"],
+["Girls Just Wanna Have Fun","Cyndi Lauper","80s"],["Teenage Dream","Katy Perry","Pop"],["Take Me to Church","Hozier","Indie"],
+["Superstition","Stevie Wonder","Soul"],["Waterloo","ABBA","Pop"],["Eye of the Tiger","Survivor","Rock"],
+["Don't You Want Me","Human League","80s"],["Respect","Aretha Franklin","Soul"],["Stayin' Alive","Bee Gees","Disco"],
+["Killing Me Softly","Fugees","R&B"],["No Scrubs","TLC","R&B"],["Since U Been Gone","Kelly Clarkson","Pop Rock"],
+["Beautiful Day","U2","Rock"],["With or Without You","U2","Rock"],["Smells Like Teen Spirit","Nirvana","Grunge"],
+["Come As You Are","Nirvana","Grunge"],["Basket Case","Green Day","Punk"],["Boulevard of Broken Dreams","Green Day","Punk"],
+["Yellow","Coldplay","Indie"],["Fix You","Coldplay","Indie"],["Viva la Vida","Coldplay","Indie"],
+["Chasing Cars","Snow Patrol","Indie"],["Skinny Love","Bon Iver","Indie Folk"],["Pumped Up Kicks","Foster the People","Indie"],
+["Dog Days Are Over","Florence + The Machine","Indie"],["Rolling in the Deep","Adele","Pop Soul"],
+["Someone Like You","Adele","Pop Soul"],["Hello","Adele","Pop Soul"],["Skyfall","Adele","Pop"],
+["Levels","Avicii","EDM"],["Wake Me Up","Avicii","EDM"],["Lean On","Major Lazer","Pop"],
+["Shape of You","Ed Sheeran","Pop"],["Thinking Out Loud","Ed Sheeran","Pop"],["Perfect","Ed Sheeran","Pop"],
+["Photograph","Ed Sheeran","Pop"],["Bad Blood","Taylor Swift","Pop"],["Shake It Off","Taylor Swift","Pop"],
+["Love Story","Taylor Swift","Country Pop"],["Blank Space","Taylor Swift","Pop"],["Anti-Hero","Taylor Swift","Pop"],
+["Cruel Summer","Taylor Swift","Pop"],["cardigan","Taylor Swift","Indie Pop"],["Uptown Funk","Bruno Mars","Funk Pop"],
+["Grenade","Bruno Mars","Pop"],["Locked Out of Heaven","Bruno Mars","Pop"],["24K Magic","Bruno Mars","R&B"],
+["Blinding Lights","The Weeknd","Synthpop"],["Starboy","The Weeknd","R&B"],["Save Your Tears","The Weeknd","Synthpop"],
+["Drivers License","Olivia Rodrigo","Pop"],["Good 4 U","Olivia Rodrigo","Pop Punk"],["Traitor","Olivia Rodrigo","Pop"],
+["Levitating","Dua Lipa","Pop"],["Don't Start Now","Dua Lipa","Pop"],["Physical","Dua Lipa","Pop"],
+["Watermelon Sugar","Harry Styles","Pop"],["As It Was","Harry Styles","Pop"],["Sign of the Times","Harry Styles","Pop Rock"],
+["Bad Guy","Billie Eilish","Pop"],["Ocean Eyes","Billie Eilish","Pop"],["Circles","Post Malone","Pop Hip-Hop"],
+["Sunflower","Post Malone","Pop"],["God's Plan","Drake","Hip-Hop"],["Hotline Bling","Drake","R&B"],
+["HUMBLE.","Kendrick Lamar","Hip-Hop"],["Swimming Pools","Kendrick Lamar","Hip-Hop"],
+["Power","Kanye West","Hip-Hop"],["Stronger","Kanye West","Hip-Hop"],["99 Problems","Jay-Z","Hip-Hop"],
+["Empire State of Mind","Jay-Z","Hip-Hop"],["California Love","2Pac","Hip-Hop"],["Changes","2Pac","Hip-Hop"],
+["Juicy","Notorious B.I.G.","Hip-Hop"],["Stan","Eminem","Hip-Hop"],["The Real Slim Shady","Eminem","Hip-Hop"],
+["Crazy in Love","Beyoncé","R&B"],["Single Ladies","Beyoncé","Pop"],["Halo","Beyoncé","Pop"],
+["Formation","Beyoncé","R&B"],["Moves Like Jagger","Maroon 5","Pop Rock"],["Sugar","Maroon 5","Pop"],
+["She Will Be Loved","Maroon 5","Pop Rock"],["All I Want for Christmas Is You","Mariah Carey","Christmas"],
+["Hero","Mariah Carey","R&B"],["We Belong Together","Mariah Carey","R&B"],["Fantasy","Mariah Carey","R&B"],
+["Burn","Usher","R&B"],["Yeah!","Usher","Hip-Hop R&B"],["No One","Alicia Keys","R&B"],
+["Fallin'","Alicia Keys","R&B"],["If I Ain't Got You","Alicia Keys","R&B"],["Girl on Fire","Alicia Keys","R&B"],
+["Beautiful","Christina Aguilera","Pop"],["Fighter","Christina Aguilera","Pop"],["Toxic","Britney Spears","Pop"],
+["Oops I Did It Again","Britney Spears","Pop"],["Womanizer","Britney Spears","Pop"],
+["Despacito","Luis Fonsi","Latin"],["Hips Don't Lie","Shakira","Latin Pop"],["Livin' La Vida Loca","Ricky Martin","Latin Pop"],
+["Smooth","Santana","Latin Rock"],["Jump","Van Halen","Rock"],["Here I Go Again","Whitesnake","Rock"],
+["You Give Love a Bad Name","Bon Jovi","Rock"],["Sweet Child O' Mine","Guns N' Roses","Rock"],
+["Paradise City","Guns N' Roses","Rock"],["Welcome to the Jungle","Guns N' Roses","Rock"],
+["November Rain","Guns N' Roses","Rock"],["Enter Sandman","Metallica","Metal"],
+["Nothing Else Matters","Metallica","Metal"],["Creep","Radiohead","Indie"],["Karma Police","Radiohead","Indie"],
+["Everlong","Foo Fighters","Rock"],["Best of You","Foo Fighters","Rock"],
+["Don't Look Back in Anger","Oasis","Indie"],["Common People","Pulp","Britpop"],
+["Angels","Robbie Williams","Pop"],["Feel","Robbie Williams","Pop"],
+["Back for Good","Take That","Pop"],["How Deep Is Your Love","Bee Gees","Disco"],
+["Iris","Goo Goo Dolls","Rock"],["Let Her Go","Passenger","Folk Pop"],
+["Riptide","Vance Joy","Indie Pop"],["Budapest","George Ezra","Pop"],["Shotgun","George Ezra","Pop"],
+["Pompeii","Bastille","Indie Pop"],["Human","Rag'n'Bone Man","Soul Pop"],
+["Stay With Me","Sam Smith","Pop Soul"],["Too Good at Goodbyes","Sam Smith","Pop Soul"],
+["What's Going On","Marvin Gaye","Soul"],["Sexual Healing","Marvin Gaye","Soul"],
+["Ain't No Sunshine","Bill Withers","Soul"],["Lean on Me","Bill Withers","Soul"],
+["Ring of Fire","Johnny Cash","Country"],["Jolene","Dolly Parton","Country"],["9 to 5","Dolly Parton","Country"],
+["I Will Always Love You","Whitney Houston","Ballad"],["Greatest Love of All","Whitney Houston","Pop"],
+["Like a Prayer","Madonna","Pop"],["Material Girl","Madonna","Pop"],["Vogue","Madonna","Pop"],
+["Born This Way","Lady Gaga","Pop"],["Edge of Glory","Lady Gaga","Pop"],["Just Dance","Lady Gaga","Pop"],
+["Mr. Jones","Counting Crows","Rock"],["Basket Case","Green Day","Punk"],
+["Boulevard of Broken Dreams","Green Day","Punk"],["Song 2","Blur","Indie"],
+["Parklife","Blur","Britpop"],["Dancing in the Moonlight","Toploader","Pop Rock"],
+["Let Me Entertain You","Robbie Williams","Pop"],["Night Fever","Bee Gees","Disco"],
+["Fix You","Coldplay","Indie"],["The Scientist","Coldplay","Indie"],
+["Just the Way You Are","Bruno Mars","Pop"],["24K Magic","Bruno Mars","R&B"],
+["Congratulations","Post Malone","Hip-Hop"],["Mo Money Mo Problems","Notorious B.I.G.","Hip-Hop"],
+["DNA.","Kendrick Lamar","Hip-Hop"],["One Dance","Drake","Afrobeats"],
+["Latch","Disclosure","Electronic"],["Skin","Rag'n'Bone Man","Soul Pop"],
+["Writing's on the Wall","Sam Smith","Pop"],["Let's Get It On","Marvin Gaye","Soul"],
+["Just the Two of Us","Grover Washington Jr.","R&B"],["Whenever Wherever","Shakira","Latin Pop"],
+["La Bamba","Ritchie Valens","Latin Rock"],["Pour Some Sugar on Me","Def Leppard","Rock"],
+["Rock of Ages","Def Leppard","Rock"],["Running With the Devil","Van Halen","Rock"],
+["Bound 2","Kanye West","Hip-Hop"],["New York State of Mind","Jay-Z","Hip-Hop"],
+["Gin & Juice","Snoop Dogg","Hip-Hop"],["Next Episode","Dr. Dre","Hip-Hop"],
+["Without Me","Eminem","Hip-Hop"],["Lose Yourself","Eminem","Hip-Hop"],
+["Applause","Lady Gaga","Pop"],["Hung Up","Madonna","Pop"],
+["Memory","Musical","Classic"],["Don't Cry for Me Argentina","Musical","Classic"],
+["Angels","Robbie Williams","Pop"],["She","Elvis Costello","Classic"],
+["Always on My Mind","Elvis Presley","Classic"],["Suspicious Minds","Elvis Presley","Classic"],
+["Hound Dog","Elvis Presley","Classic"],["Johnny B. Goode","Chuck Berry","Rock n Roll"]
+];
+
+const PALETTES=[
+  {bg:'rgba(255,45,120,.12)',text:'#ff2d78',border:'rgba(255,45,120,.6)',av:'#2a0515'},
+  {bg:'rgba(123,47,255,.12)',text:'#a78bfa',border:'rgba(123,47,255,.6)',av:'#160a2a'},
+  {bg:'rgba(0,229,255,.1)',text:'#00e5ff',border:'rgba(0,229,255,.5)',av:'#00141a'},
+  {bg:'rgba(255,204,0,.1)',text:'#ffcc00',border:'rgba(255,204,0,.5)',av:'#1a1500'},
+  {bg:'rgba(0,255,136,.1)',text:'#00ff88',border:'rgba(0,255,136,.5)',av:'#001a0e'},
+  {bg:'rgba(255,153,0,.1)',text:'#ff9900',border:'rgba(255,153,0,.5)',av:'#1a0c00'},
+  {bg:'rgba(255,51,85,.1)',text:'#ff3355',border:'rgba(255,51,85,.5)',av:'#1a0008'},
+  {bg:'rgba(0,200,255,.1)',text:'#00c8ff',border:'rgba(0,200,255,.5)',av:'#001018'},
+];
+const gp=i=>PALETTES[i%PALETTES.length];
+
+let players=[],deck=[],songIdx=0,currentSinger=0,round=1,elimOrder=[],nextSinger=-1;
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function initPlayers(){
+  const names=shuffle(["Tupper","Ashley","Cam","Cari","Coach","Dan","Danni","Dino","Gabby","Gautier","Hugo","Gay","Jay","Jess","Jordan","Jordi","Judith","Kevin","Lo","Reira","Lizzie","Magatha","Noley","Oli","Pagina","Riva","Terri","Verna","Yadi"]);
+  players=names.map((n,i)=>({name:n,idx:i,alive:true,elimRound:null,elimSong:null}));
+}
+function initDeck(){
+  const d=[...SONGS];
+  for(let i=d.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]];}
+  deck=d;songIdx=0;
+}
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById(id);
+  el.classList.add('active');
+  window.scrollTo(0,0);
+  if(id==='s-home')updateHome();
+  if(id==='s-standings')renderStandings();
+  if(id==='s-setup')document.getElementById('player-input').value=players.map(p=>p.name).join('\n');
+}
+function updateHome(){
+  const alive=players.filter(p=>p.alive);
+  document.getElementById('h-alive').textContent=alive.length;
+  document.getElementById('h-elim').textContent=players.filter(p=>!p.alive).length;
+  document.getElementById('h-round').textContent=round;
+  document.getElementById('h-left').textContent=Math.max(0,200-songIdx);
+  const c=document.getElementById('home-players');
+  if(!alive.length){c.innerHTML='';return;}
+  c.innerHTML=alive.map(p=>{
+    const pal=gp(p.idx);
+    return`<div class="player-card" onclick="selectSinger(${p.idx})">
+      <div class="avatar" style="background:${pal.av};color:${pal.text};border-color:${pal.border}">${p.name[0]}</div>
+      <span style="font-size:15px;font-weight:500;flex:1">${p.name}</span>
+      <span style="color:${pal.text};font-size:18px;text-shadow:0 0 8px ${pal.text};opacity:.7">›</span>
+    </div>`;
+  }).join('');
+}
+function selectSinger(idx){currentSinger=idx;drawSong();}
+function drawSong(){
+  if(songIdx>=deck.length)initDeck();
+  const alive=players.filter(p=>p.alive);
+  if(alive.length<=1){showWinner();return;}
+  if(!players[currentSinger]||!players[currentSinger].alive)
+    currentSinger=alive[Math.floor(Math.random()*alive.length)].idx;
+  nextSinger=-1;
+  const song=deck[songIdx];
+  const singer=players[currentSinger];
+  const pal=gp(singer.idx);
+  document.getElementById('song-topbar-title').textContent='Round '+round;
+  document.getElementById('alive-count').textContent=alive.length+' alive';
+  const av=document.getElementById('singer-av');
+  av.textContent=singer.name[0];av.style.background=pal.av;
+  av.style.color=pal.text;av.style.borderColor=pal.border;
+  document.getElementById('singer-nm').textContent=singer.name;
+  document.getElementById('genre-tag').textContent=song[2];
+  document.getElementById('song-num-lbl').textContent='Song '+(songIdx+1)+' of 200';
+  document.getElementById('song-t').textContent=song[0];
+  document.getElementById('song-a').textContent='by '+song[1];
+  renderNextPicker();
+  go('s-song');
+}
+function renderNextPicker(){
+  const alive=players.filter(p=>p.alive&&p.idx!==currentSinger);
+  document.getElementById('next-wrap').innerHTML=alive.map(p=>{
+    const pal=gp(p.idx);
+    return`<button class="next-chip" id="nc-${p.idx}" onclick="pickNext(${p.idx})">
+      <div class="avatar" style="width:24px;height:24px;background:${pal.av};color:${pal.text};border-color:${pal.border};font-size:11px">${p.name[0]}</div>
+      ${p.name}
+    </button>`;
+  }).join('');
+}
+function pickNext(idx){
+  nextSinger=idx;
+  document.querySelectorAll('.next-chip').forEach(c=>c.classList.remove('selected'));
+  const el=document.getElementById('nc-'+idx);
+  if(el)el.classList.add('selected');
+}
+function vote(result){
+  const song=deck[songIdx];
+  const singer=players[currentSinger];
+  if(result==='skip'){const s=deck.splice(songIdx,1)[0];deck.push(s);drawSong();return;}
+  songIdx++;
+  if(result==='pass'){showVerdict('pass',singer,song);}
+  else{
+    singer.alive=false;singer.elimRound=round;singer.elimSong=song[0];
+    elimOrder.unshift({...singer});round++;
+    const alive=players.filter(p=>p.alive);
+    if(alive.length<=1){showWinner();return;}
+    showVerdict('fail',singer,song);
+  }
+}
+function showVerdict(type,singer,song){
+  const pal=gp(singer.idx);
+  document.getElementById('v-icon').textContent=type==='pass'?'🎤':'💀';
+  document.getElementById('v-name').textContent=singer.name;
+  document.getElementById('v-name').style.color=type==='pass'?'#00ff88':'#ff3355';
+  document.getElementById('v-name').style.textShadow=type==='pass'?'0 0 30px rgba(0,255,136,.5),0 0 60px rgba(0,255,136,.3)':'0 0 30px rgba(255,51,85,.5),0 0 60px rgba(255,51,85,.3)';
+  document.getElementById('v-status').textContent=type==='pass'?'SURVIVED':'ELIMINATED';
+  document.getElementById('v-status').style.color=type==='pass'?'rgba(0,255,136,.6)':'rgba(255,51,85,.6)';
+  document.getElementById('v-song').textContent='"'+song[0]+'" by '+song[1];
+  document.getElementById('v-bg').style.background=type==='pass'?'radial-gradient(ellipse at center,rgba(0,255,136,.06) 0%,transparent 70%)':'radial-gradient(ellipse at center,rgba(255,51,85,.08) 0%,transparent 70%)';
+  const btns=document.getElementById('v-btns');
+  btns.innerHTML=type==='pass'
+    ?`<button class="btn btn-cyan" onclick="afterVerdict()">Continue ›</button>`
+    :`<button class="btn btn-fail" onclick="afterVerdict()">Choose next singer ›</button>`;
+  go('s-verdict');
+}
+function afterVerdict(){
+  if(nextSinger>=0&&players[nextSinger]&&players[nextSinger].alive)currentSinger=nextSinger;
+  else{const alive=players.filter(p=>p.alive);currentSinger=alive[Math.floor(Math.random()*alive.length)].idx;}
+  nextSinger=-1;drawSong();
+}
+function renderStandings(){
+  const alive=players.filter(p=>p.alive);
+  const elim=[...elimOrder];
+  let html='';
+  if(alive.length){
+    html+=`<div class="section-label">${alive.length} still standing</div>`;
+    html+=alive.map((p,i)=>{
+      const pal=gp(p.idx);
+      return`<div class="elim-row">
+        <div class="elim-rank">${i+1}</div>
+        <div class="avatar" style="background:${pal.av};color:${pal.text};border-color:${pal.border}">${p.name[0]}</div>
+        <div style="flex:1"><div style="font-weight:500">${p.name}</div></div>
+        <span style="font-family:var(--font-mono);font-size:10px;padding:3px 10px;border:1px solid rgba(0,255,136,.3);color:#00ff88;background:rgba(0,255,136,.07);text-transform:uppercase;letter-spacing:.1em">Alive</span>
+      </div>`;
+    }).join('');
+  }
+  if(elim.length){
+    html+=`<div class="section-label" style="margin-top:.75rem">${elim.length} eliminated</div>`;
+    html+=elim.map((p,i)=>{
+      const pal=gp(p.idx);
+      return`<div class="elim-row" style="opacity:.5">
+        <div class="elim-rank">#${elim.length-i}</div>
+        <div class="avatar" style="background:${pal.av};color:${pal.text};border-color:${pal.border}">${p.name[0]}</div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:500">${p.name}</div>
+          <div style="font-size:11px;color:var(--dim);font-family:var(--font-mono)">Round ${p.elimRound} · ${p.elimSong}</div>
+        </div>
+        <span style="font-family:var(--font-mono);font-size:10px;padding:3px 10px;border:1px solid rgba(255,51,85,.3);color:#ff3355;background:rgba(255,51,85,.07);text-transform:uppercase;letter-spacing:.1em">Out</span>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('standings-list').innerHTML=html;
+}
+function showWinner(){
+  const alive=players.filter(p=>p.alive);
+  const w=alive[0];
+  document.getElementById('w-name').textContent=w?w.name:'—';
+  document.getElementById('w-sub').textContent=w?`Survived ${elimOrder.length} elimination${elimOrder.length!==1?'s':''} · ${round-1} round${round>2?'s':''}`:'' ;
+  const el=document.getElementById('w-elim-list');
+  const elim=[...elimOrder];
+  el.innerHTML=elim.length?elim.map((p,i)=>{
+    const pal=gp(p.idx);
+    return`<div class="elim-row">
+      <div class="elim-rank">#${elim.length-i}</div>
+      <div class="avatar" style="background:${pal.av};color:${pal.text};border-color:${pal.border};width:28px;height:28px;font-size:12px">${p.name[0]}</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:500">${p.name}</div>
+        <div style="font-size:11px;color:var(--dim);font-family:var(--font-mono)">Round ${p.elimRound}</div>
+      </div>
+      <div style="text-align:right;font-size:11px;color:var(--dim);font-family:var(--font-mono);max-width:130px;line-height:1.4">${p.elimSong}</div>
+    </div>`;
+  }).join(''):'<div style="padding:1.25rem;color:var(--dim);font-family:var(--font-mono);font-size:12px;text-align:center">No eliminations yet.</div>';
+  go('s-winner');
+}
+function savePlayers(){
+  const names=document.getElementById('player-input').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  if(!names.length)return;
+  const shuffled=shuffle(names);
+  players=shuffled.map((n,i)=>({name:n,idx:i,alive:true,elimRound:null,elimSong:null}));
+  currentSinger=0;round=1;elimOrder=[];nextSinger=-1;
+  initDeck();go('s-home');
+}
+function resetAll(){
+  initPlayers();initDeck();
+  currentSinger=0;round=1;elimOrder=[];nextSinger=-1;
+  go('s-home');
+}
+initPlayers();initDeck();updateHome();
+</script>
+</body>
+</html>
