@@ -195,6 +195,31 @@
     if (window.location.hash === '#hunt') huntRestoreIfUnlocked();
   });
 
+  /* ── Slideshow Karaoke password gate ── */
+  function karaokeRestoreIfUnlocked() {
+    if (sessionStorage.getItem('karaoke-unlocked') === '1') {
+      var gate = document.getElementById('karaoke-gate');
+      var content = document.getElementById('karaoke-content');
+      if (gate) gate.style.display = 'none';
+      if (content) content.style.display = 'block';
+    }
+  }
+
+  window.karaokeUnlock = function() {
+    var pw = (document.getElementById('karaoke-pw') || {}).value || '';
+    if (pw.toLowerCase().trim() === 'improv') {
+      sessionStorage.setItem('karaoke-unlocked', '1');
+      karaokeRestoreIfUnlocked();
+    } else {
+      var err = document.getElementById('karaoke-err');
+      if (err) err.style.display = 'block';
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.location.hash === '#karaoke') karaokeRestoreIfUnlocked();
+  });
+
   /* ── Karaoke Showdown password gate ── */
   function karaokeShowdownRestoreIfUnlocked() {
     if (sessionStorage.getItem('karaoke-showdown-unlocked') === '1') {
