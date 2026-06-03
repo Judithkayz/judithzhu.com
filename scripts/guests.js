@@ -142,7 +142,6 @@
         + '<span style="' + tagStyle + '">' + g.status + '</span>'
         + (g.age ? '<span style="' + tagStyle + '">' + g.age + '</span>' : '')
         + '<span style="' + tagStyle + '">Known ' + acqText + '</span>'
-        + roomTag
         + '</div>'
         + '</div>'
         + '</div>';
