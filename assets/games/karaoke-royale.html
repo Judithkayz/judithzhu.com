@@ -861,7 +861,7 @@ const PALETTES=[
 ];
 const gp=i=>PALETTES[i%PALETTES.length];
 
-let players=[],deck=[],songIdx=0,currentSinger=0,round=1,elimOrder=[],nextSinger=-1;
+let players=[],deck=[],songIdx=0,currentSinger=0,round=1,elimOrder=[],nextSinger=-1,roundQueue=[];
 
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function initPlayers(){
@@ -899,13 +899,30 @@ function updateHome(){
     </div>`;
   }).join('');
 }
-function selectSinger(idx){currentSinger=idx;drawSong();}
+function refillQueue(excludeIdx){
+  /* Build a fresh shuffled queue of all alive players except the one just sung */
+  const alive=players.filter(p=>p.alive&&p.idx!==excludeIdx);
+  roundQueue=shuffle(alive.map(p=>p.idx));
+}
+function nextFromQueue(){
+  /* Drop any dead players that may have been in the queue */
+  roundQueue=roundQueue.filter(idx=>players[idx]&&players[idx].alive);
+  if(roundQueue.length===0)refillQueue(currentSinger);
+  return roundQueue.shift();
+}
+function selectSinger(idx){
+  /* Manual tap from home — put that person up and rebuild queue without them */
+  currentSinger=idx;
+  refillQueue(idx);
+  drawSong();
+}
 function drawSong(){
   if(songIdx>=deck.length)initDeck();
   const alive=players.filter(p=>p.alive);
   if(alive.length<=1){showWinner();return;}
+  /* If currentSinger is dead or unset, pull from queue */
   if(!players[currentSinger]||!players[currentSinger].alive)
-    currentSinger=alive[Math.floor(Math.random()*alive.length)].idx;
+    currentSinger=nextFromQueue();
   nextSinger=-1;
   const song=deck[songIdx];
   const singer=players[currentSinger];
@@ -935,6 +952,9 @@ function renderNextPicker(){
 }
 function pickNext(idx){
   nextSinger=idx;
+  /* Move chosen player to front of queue so they go next */
+  roundQueue=roundQueue.filter(i=>i!==idx);
+  roundQueue.unshift(idx);
   document.querySelectorAll('.next-chip').forEach(c=>c.classList.remove('selected'));
   const el=document.getElementById('nc-'+idx);
   if(el)el.classList.add('selected');
@@ -948,6 +968,8 @@ function vote(result){
   else{
     singer.alive=false;singer.elimRound=round;singer.elimSong=song[0];
     elimOrder.unshift({...singer});round++;
+    /* Remove eliminated player from queue in case they were still in it */
+    roundQueue=roundQueue.filter(i=>i!==singer.idx);
     const alive=players.filter(p=>p.alive);
     if(alive.length<=1){showWinner();return;}
     showVerdict('fail',singer,song);
@@ -970,8 +992,8 @@ function showVerdict(type,singer,song){
   go('s-verdict');
 }
 function afterVerdict(){
-  if(nextSinger>=0&&players[nextSinger]&&players[nextSinger].alive)currentSinger=nextSinger;
-  else{const alive=players.filter(p=>p.alive);currentSinger=alive[Math.floor(Math.random()*alive.length)].idx;}
+  /* Pull next singer from queue (condemned's pick is already at front if chosen) */
+  currentSinger=nextFromQueue();
   nextSinger=-1;drawSong();
 }
 function renderStandings(){
@@ -1033,12 +1055,12 @@ function savePlayers(){
   if(!names.length)return;
   const shuffled=shuffle(names);
   players=shuffled.map((n,i)=>({name:n,idx:i,alive:true,elimRound:null,elimSong:null}));
-  currentSinger=0;round=1;elimOrder=[];nextSinger=-1;
+  currentSinger=0;round=1;elimOrder=[];nextSinger=-1;roundQueue=[];
   initDeck();go('s-home');
 }
 function resetAll(){
   initPlayers();initDeck();
-  currentSinger=0;round=1;elimOrder=[];nextSinger=-1;
+  currentSinger=0;round=1;elimOrder=[];nextSinger=-1;roundQueue=[];
   go('s-home');
 }
 initPlayers();initDeck();updateHome();
