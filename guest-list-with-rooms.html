@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guest List — Chateau de Pleurs 06.26</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@200;300;400&display=swap" rel="stylesheet">
+<script>
+if (sessionStorage.getItem('chateau_unlocked_0626') !== '1') {
+  window.location.replace('index.html');
+}
+</script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #f5f0e8;
+    color: #2a1f18;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+    padding: 40px 20px 80px;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  h1 em { color: #8a6030; font-style: italic; }
+  .kicker {
+    font-size: 8px; letter-spacing: .32em; color: #8a6030;
+    text-transform: uppercase; margin-bottom: 12px; display: block;
+  }
+  .controls {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin: 28px 0 24px;
+    align-items: center;
+  }
+  select {
+    background: rgba(255,252,248,0.9);
+    border: 1px solid rgba(138,96,48,0.3);
+    color: #2a1f18;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px; letter-spacing: .08em;
+    padding: 7px 12px; cursor: pointer; outline: none;
+  }
+  select:focus { border-color: #8a6030; }
+  .count {
+    font-size: 9px; letter-spacing: .22em; color: rgba(42,31,24,0.4);
+    text-transform: uppercase; margin-left: auto;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 2px;
+  }
+  @media (max-width: 500px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+</style>
+</head>
+<body>
+
+<span class="kicker">Chateau de Pleurs · June 2026</span>
+<h1>The Guest<br><em>List.</em></h1>
+
+<div class="controls">
+  <select id="flt-age" onchange="renderGuests()">
+    <option value="">All ages</option>
+    <option value="Old Coot">Old Coot</option>
+    <option value="Skibidi iPad kid">Skibidi iPad Kid</option>
+  </select>
+  <select id="flt-status" onchange="renderGuests()">
+    <option value="">All statuses</option>
+    <option value="Single">Single</option>
+    <option value="In a relationship">In a Relationship</option>
+    <option value="Married">Married</option>
+  </select>
+  <select id="flt-nationality" onchange="renderGuests()">
+    <option value="">All nationalities</option>
+    <option value="UK">UK</option>
+    <option value="USA">USA</option>
+    <option value="France">France</option>
+    <option value="Spain">Spain</option>
+    <option value="Germany">Germany</option>
+    <option value="China">China</option>
+    <option value="Taiwan">Taiwan</option>
+    <option value="Japan">Japan</option>
+    <option value="Bosnia">Bosnia</option>
+    <option value="Brazil">Brazil</option>
+    <option value="Italy">Italy</option>
+    <option value="Venezuela">Venezuela</option>
+    <option value="Uruguay">Uruguay</option>
+    <option value="Australia">Australia</option>
+  </select>
+  <select id="flt-room" onchange="renderGuests()">
+    <option value="">All floors</option>
+    <option value="1">Floor 1</option>
+    <option value="2">Floor 2</option>
+    <option value="3">Floor 3</option>
+  </select>
+  <select id="srt-by" onchange="renderGuests()">
+    <option value="name">Sort: Name</option>
+    <option value="room">Sort: Room</option>
+    <option value="acquaintance_desc">Sort: Known longest</option>
+    <option value="acquaintance_asc">Sort: Known shortest</option>
+    <option value="passports_desc">Sort: Most passports</option>
+  </select>
+  <span class="count" id="guest-count"></span>
+</div>
+
+<div class="grid" id="guest-grid"></div>
+
+<script>
+const GUESTS = [
+  {name:"Oliver Laso",initials:"OL",url:"https://www.linkedin.com/in/oliver-barry",age:"Old Coot",role:"Staff Software Engineer @ Palantir",bio:"Calypso · Whatever Calypso dislikes",room:"1K1",bunking:"Calypso",status:"Dawg",passports:3,acquaintance:10,nationalities:["UK","Spain","Germany"],photo:"assets/photos/oliver-laso.jpg"},
+  {name:"Yadi Yang",initials:"YY",url:"https://www.linkedin.com/in/yadi-yang-9873b8142",age:"Skibidi iPad kid",role:"Product Manager @ Boeing",bio:"Selling defence secrets to china · Normal diet methods",room:"1K2",bunking:"Leila Fujiwara",status:"Single",passports:1,acquaintance:12,nationalities:["China"],photo:"assets/photos/yadi-yang.jpg"},
+  {name:"Leila Fujiwara",initials:"LF",url:"https://www.linkedin.com/in/leila-fujiwara-b40621136",age:"Old Coot",role:"Associate @ McDermott Will & Emery",bio:"Self care · The brakes",room:"1K2",bunking:"Yadi Yang",status:"Single",passports:1,acquaintance:12,nationalities:["Japan"],photo:"assets/photos/leila-fujiwara.jpg"},
+  {name:"Nolan Betts",initials:"NB",url:"https://www.linkedin.com/in/nolanbetts",age:"Old Coot",role:"Lead Software Engineer @ Capital One",bio:"losing toenails · Cars",room:"1K3",bunking:"Magatha Wang",status:"In a relationship",passports:1,acquaintance:7,nationalities:["USA"],photo:"assets/photos/nolan-betts.jpg"},
+  {name:"Magatha Wang",initials:"MW",url:"https://contactout.com/Maggie-Wang-86630684",age:"Skibidi iPad kid",role:"MA candidate @ TUM",bio:"playing life on hard-mode · Convenience",room:"1K3",bunking:"Nolan Betts",status:"In a relationship",passports:2,acquaintance:14,nationalities:["Taiwan","USA"],photo:"assets/photos/maggie-wang.jpg",photoPosition:"center center"},
+  {name:"Dino Mujkic",initials:"DM",url:"https://www.linkedin.com/in/dino-mujkic",age:"Old Coot",role:"Staff Software Engineer @ Meta",bio:"War, Napoleon, and saying \"I'm easy\" · showing up on time",room:"1K4",bunking:"Verna Gao",status:"In a relationship",passports:1,acquaintance:4,nationalities:["Bosnia"],photo:"assets/photos/dino-mujkic.jpg"},
+  {name:"Verna Gao",initials:"VG",url:"https://www.linkedin.com/in/vzgao",age:"Old Coot",role:"Channel 4 Chef + Influencer",bio:"Cooking, eating, travelling · Internet trolls",room:"1K4",bunking:"Dino Mujkic",status:"In a relationship",passports:2,acquaintance:0.5,nationalities:["UK","China"],photo:"assets/photos/verna-gao.jpg"},
+  {name:"Alex Tupper",initials:"AT",url:"https://www.linkedin.com/in/alex-tupper-606319a9",age:"Old Coot",role:"Co-Founder @ Kettel",bio:"Public speaking when nobody is looking · AI",room:"1T5",bunking:"Cesar Lamas",status:"Married",passports:1,acquaintance:1,nationalities:["UK"],photo:"assets/photos/alex-tupper.jpg"},
+  {name:"Cesar Lamas",initials:"CL",url:"https://www.linkedin.com/in/cesar-lamas-davila-278b4b206",age:"Old Coot",role:"Software Engineer @ Airbus",bio:"Red flags · Anything that doesn't stress him out",room:"1T5",bunking:"Alex Tupper",status:"In a relationship",passports:1,acquaintance:7,nationalities:["Spain"],photo:"assets/photos/cesar-lamas.jpg"},
+  {name:"Jess Cao",initials:"JC",url:"https://x.com/caolujessica",age:"Old Coot",role:"Resident @ UChicago",bio:"Drugs, Alcohol, and pussy · Pussies",room:"2K1",bunking:"Ashley Leonard",status:"In a relationship",passports:1,acquaintance:14,nationalities:["USA"],photo:"assets/photos/jess-cao.jpg"},
+  {name:"Ashley Leonard",initials:"AL",url:"https://www.linkedin.com/in/ashley-leonard-4b0745164/",age:"Skibidi iPad kid",role:"Supervisor, Global Transformation @ McDonald's",bio:"To be edged · Edges",room:"2K1",bunking:"Jess Cao",status:"In a relationship",passports:1,acquaintance:0,nationalities:["USA"],photo:"assets/photos/ashley-leonard.jpg"},
+  {name:"Riva Han",initials:"RH",url:"https://www.linkedin.com/in/riva-han",age:"Skibidi iPad kid",role:"Judicial Law Clerk @ SD",bio:"Life-threatening hobbies · Donald Trump",room:"2K2",bunking:"Paige Amormino",status:"Single",passports:1,acquaintance:17,nationalities:["USA"],photo:"assets/photos/riva-han.jpg"},
+  {name:"Paige Amormino",initials:"PA",url:"https://www.linkedin.com/in/paige-amormino-1105433bb",age:"Skibidi iPad kid",role:"Post Doc @ Penn State",bio:"Cats and hot cheetos · When her cats eat her hot cheetos",room:"2K2",bunking:"Riva Han",status:"In a relationship",passports:1,acquaintance:13,nationalities:["USA"],photo:"assets/photos/paige-amormino.jpg"},
+  {name:"Lauren Chin",initials:"LC",url:"https://www.linkedin.com/in/lauren-chin-638a6a83",age:"Old Coot",role:"R&R",bio:"English men · English weather",room:"2K3",bunking:"Dan Forman",status:"In a relationship",passports:2,acquaintance:13,nationalities:["UK","USA"],photo:"assets/photos/lauren-chin.jpg"},
+  {name:"Dan Forman",initials:"DF",url:"https://www.linkedin.com/in/daniel-forman-39052253",age:"Old Coot",role:"Global Marketing Director - Oncology @ GSK",bio:"Being exactly Lauren's type · poor form (on and off the court)",room:"2K3",bunking:"Lauren Chin",status:"In a relationship",passports:1,acquaintance:1,nationalities:["UK"],photo:"assets/photos/dan-forman.jpg"},
+  {name:"Danni Pair",initials:"DP",url:"https://www.linkedin.com/in/dannipair",age:"Old Coot",role:"Group Account Supervisor @ Synapse",bio:"Chinese men · Slavic men",room:"2K4",bunking:"Carina Escobar",status:"In a relationship",passports:1,acquaintance:11,nationalities:["USA"],photo:"assets/photos/danni-pair.jpg"},
+  {name:"Carina Escobar",initials:"CE",url:"https://www.linkedin.com/in/carina-escobar95",age:"Old Coot",role:"Project Manager @ Maslansky + Partners",bio:"Burnt Meat · Anything that doesn't smell like shoving sugar down your throat",room:"2K4",bunking:"Danni Pair",status:"Single",passports:1,acquaintance:12,nationalities:["USA"],photo:"assets/photos/carina-escobar.jpg"},
+  {name:"Cameron Rhodes",initials:"CR",url:"https://www.linkedin.com/in/cameron-rhodes-2016a1169",age:"Old Coot",role:"Account Executive @ Velaris",bio:"Volleyball and tall blondes · Ginger CROs",room:"2T5",bunking:"Jordi Soxa",status:"Single",passports:1,acquaintance:3,nationalities:["UK"],photo:"assets/photos/cameron-rhodes.jpg"},
+  {name:"Jordi Soxa",initials:"JSo",url:"https://www.linkedin.com/in/jordisoxa",age:"Old Coot",role:"Product Design Lead @ Meta",bio:"Running away to SE Asia · hot, steamy reunions with bad past decisions",room:"2T5",bunking:"Cameron Rhodes",status:"Single",passports:2,acquaintance:1,nationalities:["Venezuela","UK"],photo:"assets/photos/jordi-soxa.jpg"},
+  {name:"Hugo Grochau",initials:"HG",url:"https://www.linkedin.com/in/hugogrochau/",age:"Old Coot",role:"Staff Software Engineer @ Meta",bio:"Taken Women · Bad health insights",room:"3S4",bunking:"NA",status:"Single",passports:3,acquaintance:1,nationalities:["Brazil","Italy","Australia"],photo:"assets/photos/hugo-grochau.jpg"},
+  {name:"Kevin Chacon",initials:"KC",url:"https://uk.linkedin.com/in/kevinchacon",age:"Old Coot",role:"ADHD-fueled entrepreneur",bio:"Spawning new side quests · the main quest",room:"3Q1",bunking:"Gabby Kinder",status:"In a relationship",passports:2,acquaintance:3,nationalities:["Uruguay","UK"],photo:"assets/photos/kevin-chacon.jpg",photoPosition:"center center"},
+  {name:"Gabby Kinder",initials:"GK",url:"https://www.linkedin.com/in/gabrielle-kinder-b70b5581/",age:"Old Coot",role:"Carbon Research Lead @ London Stock Exchange",bio:"Chubby men? · When Kevin becomes a chubby man",room:"3Q1",bunking:"Kevin Chacon",status:"In a relationship",passports:1,acquaintance:4,nationalities:["UK"],photo:"assets/photos/gabby-kinder.jpg",photoPosition:"center center"},
+  {name:"Terrence Rice",initials:"TR",url:"https://www.linkedin.com/in/terrence-rice-b383aa99",age:"Old Coot",role:"HedgeFund Analyst @ Systems 2 Capital",bio:"BeepBoop · The smell of fermentation",room:"3Q2",bunking:"Jordan Smith",status:"In a relationship",passports:1,acquaintance:12,nationalities:["USA"],photo:"assets/photos/terrence-rice.jpg"},
+  {name:"Jordan Smith",initials:"JS",url:"https://www.linkedin.com/in/jordan-smith-205126bb/",age:"Old Coot",role:"Contracts and Procurement Solicitor @ Chelsea and Kensington Council",bio:"Good music, Jamaican food, and chill walks with Taro · Child solicitors",room:"3Q2",bunking:"Terrence Rice",status:"In a relationship",passports:1,acquaintance:9,nationalities:["UK"],photo:"assets/photos/jordan-smith.jpg"},
+  {name:"Gautier Dagan",initials:"GD",url:"https://www.linkedin.com/in/gautier-dagan",age:"Old Coot",role:"Member of Technical Staff @ Cohere",bio:"Cheese & being called Dr. Dagan · People who are late",room:"3Q3",bunking:"Lizzie Roberts",status:"Married",passports:2,acquaintance:4,nationalities:["France","UK"],photo:"assets/photos/gautier-dagan.jpg"},
+  {name:"Lizzie Roberts",initials:"LR",url:"https://www.linkedin.com/in/lizzie-roberts-930a268b",age:"Old Coot",role:"Deputy News Editor @ The Sunday Times",bio:"Running the hottest gossip in the UK · Saturdays",room:"3Q3",bunking:"Gautier Dagan",status:"Married",passports:1,acquaintance:4,nationalities:["UK"],photo:"assets/photos/lizzie-roberts.jpg"},
+  {name:"Jay Nam",initials:"JN",url:"https://www.linkedin.com/in/jaywnam",age:"Old Coot",role:"MBA Candidate @ Harvard Business School",bio:"Money, Uber drivers, Bears, Social chaos · being told \"I don't see color\"",room:"3T6",bunking:"Jay Viray",status:"Single",passports:1,acquaintance:14,nationalities:["USA"],photo:"assets/photos/jay-nam.jpg"},
+  {name:"Jay Viray",initials:"JV",url:"https://www.linkedin.com/in/jayhviray",age:"Skibidi iPad kid",role:"Fine Arts Underwriter @ Berkeley Asset Protection",bio:"Falling off the wagon and indulging in drinking, smoking and Mcdonalds · the day after falling off the wagon",room:"3T6",bunking:"Jay Nam",status:"Single",passports:1,acquaintance:12,nationalities:["USA"],photo:"assets/photos/jay-viray.jpg"},
+];
+
+function floorFromRoom(room) {
+  if (!room || room === "TBD") return null;
+  const m = room.match(/^(\d)/);
+  return m ? parseInt(m[1]) : null;
+}
+
+function renderGuests() {
+  var age    = document.getElementById("flt-age").value;
+  var status = document.getElementById("flt-status").value;
+  var nat    = document.getElementById("flt-nationality").value;
+  var floor  = document.getElementById("flt-room").value;
+  var sort   = document.getElementById("srt-by").value;
+
+  var list = GUESTS.filter(function(g) {
+    if (age && g.age.toLowerCase() !== age.toLowerCase()) return false;
+    if (status && g.status.toLowerCase().indexOf(status.toLowerCase()) === -1) return false;
+    if (nat && g.nationalities.indexOf(nat) === -1) return false;
+    if (floor && floorFromRoom(g.room) !== parseInt(floor)) return false;
+    return true;
+  });
+
+  list.sort(function(a, b) {
+    if (sort === "name")              return a.name.localeCompare(b.name);
+    if (sort === "acquaintance_desc") return b.acquaintance - a.acquaintance;
+    if (sort === "acquaintance_asc")  return a.acquaintance - b.acquaintance;
+    if (sort === "passports_desc")    return b.passports - a.passports;
+    if (sort === "room")              return (a.room||"ZZZ").localeCompare(b.room||"ZZZ");
+    return 0;
+  });
+
+  document.getElementById("guest-count").textContent = list.length + " guest" + (list.length !== 1 ? "s" : "");
+
+  var tagStyle = 'font-size:6.5px;letter-spacing:.13em;padding:2px 6px;border:1px solid rgba(138,96,48,0.28);color:rgba(42,31,24,0.5);text-transform:uppercase;';
+
+  var html = list.map(function(g) {
+    var acqText  = g.acquaintance < 1 ? "A few months" : g.acquaintance + " yr" + (g.acquaintance !== 1 ? "s" : "");
+    var floorNum = floorFromRoom(g.room);
+    var floorLabel = floorNum ? " · Floor " + floorNum : "";
+    var roomTag  = g.room ? '<span style="' + tagStyle + '">Room ' + g.room + floorLabel + '</span>' : "";
+    var natTags  = g.nationalities.length > 0
+      ? g.nationalities.map(function(n){ return '<span style="' + tagStyle + '">' + n + '</span>'; }).join('')
+      : '';
+
+    var photoInner = g.photo
+      ? '<img src="' + g.photo + '" style="width:100%;height:100%;object-fit:cover;object-position:' + (g.photoPosition || 'center top') + ';display:block;">'
+      : '<div style="font-family:\'Playfair Display\',serif;font-size:22px;font-weight:300;color:#8a6030;opacity:0.42;">' + g.initials + '</div>';
+
+    return '<div style="background:rgba(255,252,248,0.8);display:flex;flex-direction:column;">'
+      + '<div style="width:100%;aspect-ratio:1;background:#e8ddd0;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:110px;border-radius:50%;">'
+      + photoInner
+      + '</div>'
+      + '<div style="padding:13px 15px 15px;flex:1;display:flex;flex-direction:column;">'
+      + '<div style="font-family:\'Playfair Display\',serif;font-size:15px;font-weight:400;color:#2a1f18;letter-spacing:-.01em;line-height:1.2;margin-bottom:2px;">'
+      + (g.url ? '<a href="' + g.url + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(138,96,48,0.35);">' + g.name + '</a>' : g.name)
+      + '</div>'
+      + '<span style="font-size:7.5px;letter-spacing:.18em;color:#8a6030;text-transform:uppercase;margin-bottom:7px;display:block;">' + g.role + '</span>'
+      + (function() {
+          var label = 'font-style:normal;font-size:7px;letter-spacing:.2em;text-transform:uppercase;color:rgba(42,31,24,0.35);display:block;margin-bottom:2px;';
+          var parts = g.bio.split(' · ');
+          var html = parts.length === 2
+            ? '<span style="' + label + '">Loves</span>' + parts[0] + '<br><span style="' + label + 'margin-top:6px;">Hates</span>' + parts[1]
+            : g.bio;
+          return '<div style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:12px;color:rgba(42,31,24,0.5);line-height:1.58;margin-bottom:10px;flex:1;">' + html + '</div>';
+        })()
+      + '<div style="display:flex;flex-wrap:wrap;gap:3px;">'
+      + natTags
+      + '<span style="' + tagStyle + '">' + g.status + '</span>'
+      + (g.age ? '<span style="' + tagStyle + '">' + g.age + '</span>' : '')
+      + '<span style="' + tagStyle + '">Known ' + acqText + '</span>'
+      + roomTag
+      + '</div>'
+      + '</div>'
+      + '</div>';
+  }).join("");
+
+  if (list.length === 0) {
+    html = '<div style="grid-column:1/-1;padding:52px;text-align:center;font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:15px;color:rgba(42,31,24,0.28);">No guests match the current filters.</div>';
+  }
+
+  document.getElementById("guest-grid").innerHTML = html;
+}
+
+renderGuests();
+</script>
+</body>
+</html>
