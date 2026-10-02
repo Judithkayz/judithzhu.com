@@ -8,8 +8,198 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@200;300;400&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="styles.css">
+<style>
+/* ── Lock screen ── */
+#lock-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--warm-black);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+#lock-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 60% at 50% 40%, rgba(198,167,94,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.lock__eyebrow {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 200;
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.7;
+  margin-bottom: 1.4rem;
+}
+.lock__title {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(1.9rem, 5vw, 3rem);
+  color: var(--ivory);
+  text-align: center;
+  line-height: 1.2;
+  margin-bottom: 0.45rem;
+}
+.lock__sub {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 200;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 2.8rem;
+}
+.lock__divider {
+  width: 32px;
+  height: 1px;
+  background: var(--gold-line);
+  margin: 0 auto 2.8rem;
+}
+.lock__form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 280px;
+  padding: 0 1.5rem;
+}
+.lock__input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--gold-line);
+  color: var(--ivory);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  font-size: 1.4rem;
+  letter-spacing: 0.35em;
+  text-align: center;
+  padding: 0.5rem 0.25rem;
+  outline: none;
+  transition: border-color 0.25s;
+  caret-color: var(--gold);
+}
+.lock__input::placeholder {
+  color: var(--text-dim);
+  letter-spacing: 0.2em;
+  font-size: 0.75rem;
+}
+.lock__input:focus {
+  border-bottom-color: var(--gold);
+}
+.lock__input--error {
+  border-bottom-color: #c25b5b !important;
+  animation: lock-shake 0.35s ease;
+}
+.lock__hint {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: #c25b5b;
+  opacity: 0;
+  transition: opacity 0.2s;
+  height: 0.9rem;
+}
+.lock__hint--visible { opacity: 1; }
+.lock__btn {
+  margin-top: 0.5rem;
+  background: transparent;
+  border: 1px solid var(--gold-line);
+  color: var(--gold);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 0.75rem 2.2rem;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.lock__btn:hover {
+  border-color: var(--gold);
+  background: rgba(198,167,94,0.07);
+  color: var(--ivory);
+}
+@keyframes lock-shake {
+  0%,100% { transform: translateX(0); }
+  20%      { transform: translateX(-6px); }
+  60%      { transform: translateX(6px); }
+  80%      { transform: translateX(-3px); }
+}
+#lock-screen.lock--unlocking {
+  transition: opacity 0.6s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+</style>
 </head>
 <body>
+
+<!-- ══════════════════════════
+     LOCK SCREEN
+══════════════════════════ -->
+<div id="lock-screen" role="dialog" aria-modal="true" aria-label="Password required">
+  <p class="lock__eyebrow">Private Event</p>
+  <h1 class="lock__title">Chateau de Pleurs</h1>
+  <p class="lock__sub">06 · 26 · 2026</p>
+  <div class="lock__divider"></div>
+  <form class="lock__form" onsubmit="lockSubmit(event)">
+    <input
+      class="lock__input"
+      id="lock-input"
+      type="password"
+      inputmode="numeric"
+      pattern="[0-9]*"
+      maxlength="6"
+      placeholder="enter code"
+      autocomplete="off"
+      aria-label="Password"
+      autofocus
+    />
+    <p class="lock__hint" id="lock-hint" aria-live="polite">Incorrect — try again</p>
+    <button class="lock__btn" type="submit">Enter</button>
+  </form>
+</div>
+
+<script>
+(function () {
+  var KEY = 'chateau_unlocked_0626';
+  var PASS = '060726';
+  var el = document.getElementById('lock-screen');
+
+  if (sessionStorage.getItem(KEY) === '1') {
+    el.style.display = 'none';
+    return;
+  }
+
+  window.lockSubmit = function (e) {
+    e.preventDefault();
+    var input = document.getElementById('lock-input');
+    var hint  = document.getElementById('lock-hint');
+    if (input.value === PASS) {
+      sessionStorage.setItem(KEY, '1');
+      el.classList.add('lock--unlocking');
+      setTimeout(function () { el.style.display = 'none'; }, 620);
+    } else {
+      input.classList.add('lock__input--error');
+      hint.classList.add('lock__hint--visible');
+      setTimeout(function () {
+        input.classList.remove('lock__input--error');
+        input.value = '';
+      }, 400);
+    }
+  };
+})();
+</script>
 
 <!-- ══════════════════════════
      NAVBAR
